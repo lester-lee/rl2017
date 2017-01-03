@@ -12,8 +12,15 @@ window.onload = function() {
     document.getElementById('wsrl-main-display').appendChild(
       Game.getDisplay('main').getContainer()
     );
+    // document.getElementById('wsrl-main-display').appendChild(
+    //   display.getContainer()
+    // );
+    // dm.create(display.DEBUG);
   }
 };
+
+// var dm = new ROT.Map.DividedMaze(80,24);
+// var display = new ROT.Display({width:80, height:24});
 
 var Game = {
   display: {
@@ -27,6 +34,12 @@ var Game = {
 
   init: function() {
     console.log("game init");
+
+    // set up seed
+    this._randomSeed = 5 + Math.floor(Math.random()*100000);
+    console.log("using random seed "+this._randomSeed);
+    ROT.RNG.setSeed(this._randomSeed);
+
     this.display.main.o = new ROT.Display(
       {width: this.display.main.w,
        height: this.display.main.h,
@@ -43,8 +56,7 @@ var Game = {
 
   renderMain: function() {
     var d = this.display.main.o;
-    for (var i = 0; i < 10; i++) {
-      d.drawText(5,i+5,"hello world");
-    }
+    d.drawText(5,5,"It's a Roguelike (eh)");
+    d.drawText(40,20,"Press any key to continue.");
   }
 };
