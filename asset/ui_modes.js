@@ -11,7 +11,6 @@ Game.UIMode.gameStart = {
   },
   exit: function(){
     console.log("gamestart exit");
-
   },
   render: function(display){
     console.log("gamestart render");
@@ -37,7 +36,7 @@ Game.UIMode.gamePlay = {
   },
   render: function(display){
     console.log("gamePlay render");
-    display.drawText(1,1,"gamePlay mode",fg,bg);
+    display.drawText(1,1,"the following two sentences are false",fg,bg);
     display.drawText(1,3,"press [W] to win",fg,bg);
     display.drawText(1,4,"press [L] to lose",fg,bg);
   },
@@ -71,6 +70,7 @@ Game.UIMode.gameWin = {
   render: function(display){
     console.log("gameWin render");
     display.drawText(1,2,"yer a winner",fg,bg);
+    display.drawText(1,3,"press [ESC] to play again",fg,bg);
   },
   handleInput: function(inputType,inputData){
     console.log("gameWin input");
@@ -90,7 +90,8 @@ Game.UIMode.gameLose = {
   },
   render: function(display){
     console.log("gameLose render");
-    display.drawText(1,2,"ya lost boi",fg,bg);
+    display.drawText(1,2,"ya lost boi",fg,bg);    
+    display.drawText(1,3,"press [ESC] to play again",fg,bg);
   },
   handleInput: function(inputType,inputData){
     console.log("gameLose input");
