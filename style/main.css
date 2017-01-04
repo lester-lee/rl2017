@@ -1,3 +1,9 @@
+body {
+  padding: 10px;
+  margin: 0;
+  text-align: center;
+}
+
 .wsrl-display {
   padding: 4px;
   background: #000;
@@ -12,6 +18,7 @@
 #wsrl-avatar-display {
   padding-top: 8px;
   padding-left: 8px;
+  border-right: 2px solid #fff;
 }
 
 #wsrl-main-display {
@@ -20,6 +27,7 @@
 
 #wsrl-message-display {
   clear: both;
-  padding-left: 8px;
+  border-top: 2px solid #fff;
+  padding-left: 10px;
   padding-right: 12px;
 }

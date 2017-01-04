@@ -16,7 +16,7 @@ window.onload = function() {
       Game.getDisplay('main').getContainer()
     );
     document.getElementById('wsrl-message-display').appendChild(
-      Game.getDisplay('messages').getContainer()
+      Game.getDisplay('message').getContainer()
     );
   }
 };
@@ -25,21 +25,22 @@ window.onload = function() {
 // var display = new ROT.Display({width:80, height:24});
 
 var Game = {
+  _randomSeed: 0,
   _SPACING: 1.1,
   _display: {
     main: {
-      w: 80,
-      h: 24,
+      w: 60,
+      h: 30,
       o: null
     },
-    messages: {
-      w: 100,
+    message: {
+      w: 80,
       h: 6,
       o: null
     },
     avatar: {
       w: 20,
-      h: 24,
+      h: 30,
       o: null
     }
   },
@@ -66,7 +67,7 @@ var Game = {
   renderDisplayAll: function() {
     this.renderMain();
     this.renderAvatar();
-    this.renderMessages();
+    this.renderMessage();
   },
 
   getDisplay: function(displayID) {
@@ -87,7 +88,8 @@ var Game = {
     var d = this._display.avatar.o;
   },
 
-  renderMessages: function() {
-    var d = this._display.messages.o;
+  renderMessage: function() {
+    var d = this._display.message.o;
+    d.drawText(1,1,"from forth the fatal loins of these two foes...")
   }
 };
