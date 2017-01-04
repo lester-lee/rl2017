@@ -19,6 +19,15 @@ window.onload = function() {
       Game.getDisplay('message').getContainer()
     );
 
+    // Handle keyboard events
+    var bindEventToScreen = function(eventType) {
+      window.addEventListener(eventType, function(evt) {
+          Game.eventHandler(eventType,evt);
+      });
+    };
+    bindEventToScreen('keypress');
+    bindEventToScreen('keydown');
+
     Game.switchUIMode(Game.UIMode.gameStart);
   }
 };
@@ -32,7 +41,7 @@ var Game = {
   _display: {
     main: {
       w: 60,
-      h: 30,
+      h: 25,
       o: null
     },
     message: {
@@ -42,7 +51,7 @@ var Game = {
     },
     avatar: {
       w: 20,
-      h: 30,
+      h: 25,
       o: null
     }
   },
@@ -62,9 +71,14 @@ var Game = {
       this._display[display_key].o = new ROT.Display({
         width: this._display[display_key].w,
         height: this._display[display_key].h,
-        spacing: Game._SPACING
+        spacing: Game._SPACING,
+        //forceSquareRatio: true
       });
     }
+    this.renderAll();
+  },
+
+  refresh: function() {
     this.renderAll();
   },
 
@@ -84,22 +98,32 @@ var Game = {
   },
 
   renderMain: function() {
-    var d = this.getDisplay('main');
-    this._curUIMode.render(d);
-    d.drawText(5,5,"It's a Roguelike (eh)");
-    d.drawText(40,20,"Press any key to continue.");
+    this._display.main.o.clear();
+    if (this._curUIMode && this._curUIMode.hasOwnProperty('render')){
+      var d = this.getDisplay('main');
+      this._curUIMode.render(d);
+    }
   },
 
   renderAvatar: function() {
-    var d = this.getDisplay('avatar');
-    // this._curUIMode.render(d);
-    d.drawText(1,1,"HP: deaded");
+    this._display.avatar.o.clear();
+    if (this._curUIMode && this._curUIMode.hasOwnProperty('renderAvatar')){
+      var d = this.getDisplay('avatar');
+      this._curUIMode.render(d);
+    }
   },
 
   renderMessage: function() {
     var d = this.getDisplay('message');
-    // this._curUIMode.render(d);
-    d.drawText(1,1,"from forth the fatal loins of these two foes...")
+    Game.Message.render(d);
+  },
+
+  eventHandler: function (eventType, evt) {
+    // When an event is received have the current ui handle it
+    if (this._curUIMode) {
+        this._curUIMode.handleInput(eventType, evt);
+        Game.refresh();
+    }
   },
 
   switchUIMode: function(newMode) {
