@@ -20,6 +20,7 @@ Game.UIMode.gameStart = {
   },
   handleInput: function(inputType,inputData){
     console.log("gamestart input");
+    // ignore modding keys
     if (inputData.charCode !== 0){
       Game.switchUIMode(Game.UIMode.gamePlay);
     }
@@ -37,17 +38,21 @@ Game.UIMode.gamePlay = {
   render: function(display){
     console.log("gamePlay render");
     display.drawText(1,1,"gamePlay mode",fg,bg);
-    display.drawText(1,3,"press [w] to win",fg,bg);
-    display.drawText(1,4,"press [l] to lose",fg,bg);
+    display.drawText(1,3,"press [W] to win",fg,bg);
+    display.drawText(1,4,"press [L] to lose",fg,bg);
   },
   handleInput: function(inputType,inputData){
     console.log("gamePlay input");
     switch(inputData.keyCode){
       case ROT.VK_L:
-        Game.switchUIMode(Game.UIMode.gameLose);
+        if(inputData.shiftKey){
+          Game.switchUIMode(Game.UIMode.gameLose);
+        }
         break;
       case ROT.VK_W:
-        Game.switchUIMode(Game.UIMode.gameWin);
+        if(inputData.shiftKey){
+          Game.switchUIMode(Game.UIMode.gameWin);
+        }
         break;
       default:
         break;

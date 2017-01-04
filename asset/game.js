@@ -27,7 +27,7 @@ window.onload = function() {
     };
     bindEventToScreen('keypress');
     bindEventToScreen('keydown');
-
+    
     Game.switchUIMode(Game.UIMode.gameStart);
   }
 };
