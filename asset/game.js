@@ -40,10 +40,10 @@ var Game = {
     console.log("using random seed "+this._randomSeed);
     ROT.RNG.setSeed(this._randomSeed);
 
-    this.display.main.o = new ROT.Display(
-      {width: this.display.main.w,
-       height: this.display.main.h,
-       spacing: Game.display.SPACING,});
+    this.display.main.o = new ROT.Display({
+      width: this.display.main.w,
+      height: this.display.main.h,
+      spacing: Game.display.SPACING,});
     this.renderMain();
   },
 
