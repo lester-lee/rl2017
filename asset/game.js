@@ -27,7 +27,7 @@ window.onload = function() {
     };
     bindEventToScreen('keypress');
     bindEventToScreen('keydown');
-    
+
     Game.switchUIMode(Game.UIMode.gameStart);
   }
 };
@@ -109,7 +109,7 @@ var Game = {
     this._display.avatar.o.clear();
     if (this._curUIMode && this._curUIMode.hasOwnProperty('renderAvatar')){
       var d = this.getDisplay('avatar');
-      this._curUIMode.render(d);
+      this._curUIMode.renderAvatar(d);
     }
   },
 

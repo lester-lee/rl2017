@@ -90,7 +90,7 @@ Game.UIMode.gameLose = {
   },
   render: function(display){
     console.log("gameLose render");
-    display.drawText(1,2,"ya lost boi",fg,bg);    
+    display.drawText(1,2,"ya lost boi",fg,bg);
     display.drawText(1,3,"press [ESC] to play again",fg,bg);
   },
   handleInput: function(inputType,inputData){
