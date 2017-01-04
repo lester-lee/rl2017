@@ -18,6 +18,8 @@ window.onload = function() {
     document.getElementById('wsrl-message-display').appendChild(
       Game.getDisplay('message').getContainer()
     );
+
+    Game.switchUIMode(Game.UIMode.gameStart);
   }
 };
 
@@ -45,6 +47,8 @@ var Game = {
     }
   },
 
+  _curUIMode: null,
+
   init: function() {
     console.log("game init");
 
@@ -61,17 +65,18 @@ var Game = {
         spacing: Game._SPACING
       });
     }
-    this.renderDisplayAll();
+    this.renderAll();
   },
 
-  renderDisplayAll: function() {
-    this.renderMain();
-    this.renderAvatar();
-    this.renderMessage();
+  renderAll: function() {
+    if (this._curUIMode){
+      this.renderMain();
+      this.renderAvatar();
+      this.renderMessage();
+    }
   },
 
   getDisplay: function(displayID) {
-    console.log(displayID);
     if (this._display.hasOwnProperty(displayID)){
       return this._display[displayID].o;
     }
@@ -79,17 +84,32 @@ var Game = {
   },
 
   renderMain: function() {
-    var d = this._display.main.o;
+    var d = this.getDisplay('main');
+    this._curUIMode.render(d);
     d.drawText(5,5,"It's a Roguelike (eh)");
     d.drawText(40,20,"Press any key to continue.");
   },
 
   renderAvatar: function() {
-    var d = this._display.avatar.o;
+    var d = this.getDisplay('avatar');
+    // this._curUIMode.render(d);
+    d.drawText(1,1,"HP: deaded");
   },
 
   renderMessage: function() {
-    var d = this._display.message.o;
+    var d = this.getDisplay('message');
+    // this._curUIMode.render(d);
     d.drawText(1,1,"from forth the fatal loins of these two foes...")
+  },
+
+  switchUIMode: function(newMode) {
+    if (this._curUIMode){
+      this._curUIMode.exit();
+    }
+    this._curUIMode = newMode;
+    if (this._curUIMode){
+      this._curUIMode.enter();
+    }
+    this.renderAll();
   }
 };
