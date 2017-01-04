@@ -37,17 +37,28 @@ Game.UIMode.gamePlay = {
   render: function(display){
     console.log("gamePlay render");
     display.drawText(1,1,"gamePlay mode",fg,bg);
-    display.drawText(1,3,"press [Enter] to win",fg,bg);
-    display.drawText(1,4,"press [Esc] to lose",fg,bg);
+    display.drawText(1,3,"press [w] to win",fg,bg);
+    display.drawText(1,4,"press [l] to lose",fg,bg);
   },
   handleInput: function(inputType,inputData){
     console.log("gamePlay input");
+    switch(inputData.keyCode){
+      case ROT.VK_L:
+        Game.switchUIMode(Game.UIMode.gameLose);
+        break;
+      case ROT.VK_W:
+        Game.switchUIMode(Game.UIMode.gameWin);
+        break;
+      default:
+        break;
+    }
   }
 };
 
 Game.UIMode.gameWin = {
   enter: function(){
     console.log("gameWin enter");
+    Game.Message.send('and Shelley sold seashells by the seashore');
   },
   exit: function(){
     console.log("gameWin exit");
@@ -58,12 +69,16 @@ Game.UIMode.gameWin = {
   },
   handleInput: function(inputType,inputData){
     console.log("gameWin input");
+    if (inputData.keyCode == ROT.VK_ESCAPE){
+      Game.switchUIMode(Game.UIMode.gameStart);
+    }
   }
 };
 
 Game.UIMode.gameLose = {
   enter: function(){
     console.log("gameLose enter");
+    Game.Message.send('HP: deaded');
   },
   exit: function(){
     console.log("gameLose exit");
@@ -74,5 +89,8 @@ Game.UIMode.gameLose = {
   },
   handleInput: function(inputType,inputData){
     console.log("gameLose input");
+    if (inputData.keyCode == ROT.VK_ESCAPE){
+      Game.switchUIMode(Game.UIMode.gameStart);
+    }
   }
 };
