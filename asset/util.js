@@ -1,5 +1,4 @@
 Game.util = {
-
   randomString: function (len) {
     var charSource = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
     var res='';
@@ -7,6 +6,17 @@ Game.util = {
         res += charSource.random();
     }
     return res;
+  },
+
+  init2DArray: function(xdim,ydim,initVal){
+    var a = [];
+    for (var x=0; x<xdim; x++){
+      a.push([]);
+      for (var y=0; y<ydim; y++){
+        a[x].push(initVal);
+      }
+    }
+    return a;
   }
 
 };

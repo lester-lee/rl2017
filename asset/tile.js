@@ -13,5 +13,5 @@ Game.Tile.prototype.getSymbol = function(){
  */
 
  Game.Tile.nullTile = new Game.Tile(new Game.Symbol());
- Game.Tile.floortile = new Game.Tile(new Game.Symbol('.'));
+ Game.Tile.floorTile = new Game.Tile(new Game.Symbol('.'));
  Game.Tile.wallTile = new Game.Tile(new Game.Symbol('#'));

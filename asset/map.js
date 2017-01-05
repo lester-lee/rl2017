@@ -20,3 +20,12 @@ Game.Map.prototype.getTile = function(x,y){
   }
   return this.attr._tiles[x][y] || Game.Tile.nullTile;
 }
+
+Game.Map.prototype.renderOn = function(display){
+  for (var x=0; x<this.attr._width; x++){
+    for (var y=0; y<this.attr._height; y++){
+      var s = this.getTile(x,y).getSymbol();
+      display.draw(x,y,s.getChar(),s.getFg(),s.getBg());
+    }
+  }
+};

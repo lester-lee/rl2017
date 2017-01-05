@@ -1,8 +1,8 @@
 Game.Symbol = function(chr,fg,bg){
   this.attr = {
     _char: chr,
-    _fg: fg,
-    _bg: bg
+    _fg: fg || Game.UIMode.DEFAULT_FG,
+    _bg: bg || Game.UIMode.DEFAULT_BG
   };
 };
 

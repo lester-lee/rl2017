@@ -1,8 +1,6 @@
 Game.UIMode = {};
-Game.UIMode.DEFAULT_COLOR_FG = '#fff';
-Game.UIMode.DEFAULT_COLOR_BG = '#000';
-var fg = Game.UIMode.DEFAULT_COLOR_FG;
-var bg = Game.UIMode.DEFAULT_COLOR_BG;
+Game.UIMode.DEFAULT_FG = '#fff';
+Game.UIMode.DEFAULT_BG = '#000';
 
 Game.UIMode.gameStart = {
   enter: function(){
@@ -14,7 +12,7 @@ Game.UIMode.gameStart = {
   },
   render: function(display){
     // console.log("gamestart render");
-    display.drawText(2,2,"It's a game!",fg,bg);
+    display.drawText(2,2,"It's a game!",Game.UIMode.DEFAULT_FG,Game.UIMode.DEFAULT_BG);
     display.drawText(2,3,"Press any key to continue.");
   },
   handleInput: function(inputType,inputData){
@@ -27,6 +25,9 @@ Game.UIMode.gameStart = {
 };
 
 Game.UIMode.gamePlay = {
+  attr: {
+    _map: null
+  },
   enter: function(){
     // console.log("gamePlay enter");
     Game.Message.send('a pair of star-crossed lovers take their life');
@@ -36,10 +37,11 @@ Game.UIMode.gamePlay = {
   },
   render: function(display){
     // console.log("gamePlay render");
-    display.drawText(1,1,"the following two sentences are false",fg,bg);
-    display.drawText(1,3,"press [W] to win",fg,bg);
-    display.drawText(1,4,"press [L] to lose",fg,bg);
+    display.drawText(1,1,"the following two sentences are false",Game.UIMode.DEFAULT_FG,Game.UIMode.DEFAULT_BG);
+    display.drawText(1,3,"press [W] to win",Game.UIMode.DEFAULT_FG,Game.UIMode.DEFAULT_BG);
+    display.drawText(1,4,"press [L] to lose",Game.UIMode.DEFAULT_FG,Game.UIMode.DEFAULT_BG);
     display.drawText(1,5,"press [=] to save/load/new");
+    this.attr._map.renderOn(display);
   },
   handleInput: function(inputType,inputData){
     // console.log("gamePlay input");
@@ -60,6 +62,27 @@ Game.UIMode.gamePlay = {
       default:
         break;
     }
+  },
+  setupPlay: function(){
+    var mapTiles = Game.util.init2DArray(60,25,Game.Tile.nullTile);
+    var generator = new ROT.Map.Cellular(60,25);
+    generator.randomize(0.5);
+
+    // repeated cellular automata process
+    var totalIterations = 3;
+    for (var i = 0; i < totalIterations - 1; i++){
+      generator.create();
+    }
+
+    //update map
+    generator.create(function(x,y,v){
+      if (v === 1){
+        mapTiles[x][y] = Game.Tile.floorTile;
+      }else{
+        mapTiles[x][y] = Game.Tile.wallTile;
+      }
+    });
+    this.attr._map = new Game.Map(mapTiles);
   }
 };
 
@@ -73,8 +96,8 @@ Game.UIMode.gameWin = {
   },
   render: function(display){
     // console.log("gameWin render");
-    display.drawText(1,2,"yer a winner",fg,bg);
-    display.drawText(1,3,"press [ESC] to play again",fg,bg);
+    display.drawText(1,2,"yer a winner",Game.UIMode.DEFAULT_FG,Game.UIMode.DEFAULT_BG);
+    display.drawText(1,3,"press [ESC] to play again",Game.UIMode.DEFAULT_FG,Game.UIMode.DEFAULT_BG);
   },
   handleInput: function(inputType,inputData){
     // console.log("gameWin input");
@@ -94,8 +117,8 @@ Game.UIMode.gameLose = {
   },
   render: function(display){
     // console.log("gameLose render");
-    display.drawText(1,2,"ya lost boi",fg,bg);
-    display.drawText(1,3,"press [ESC] to play again",fg,bg);
+    display.drawText(1,2,"ya lost boi",Game.UIMode.DEFAULT_FG,Game.UIMode.DEFAULT_BG);
+    display.drawText(1,3,"press [ESC] to play again",Game.UIMode.DEFAULT_FG,Game.UIMode.DEFAULT_BG);
   },
   handleInput: function(inputType,inputData){
     // console.log("gameLose input");
@@ -115,7 +138,7 @@ Game.UIMode.gamePersistence = {
   },
   render: function(display){
     // console.log("gamePersistence render");
-    display.drawText(1,2,"S to save, L to load, N for new game",fg,bg);
+    display.drawText(1,2,"S to save, L to load, N for new game",Game.UIMode.DEFAULT_FG,Game.UIMode.DEFAULT_BG);
   },
   handleInput: function(inputType,inputData){
     // console.log("gamePersistence input");
@@ -147,10 +170,12 @@ Game.UIMode.gamePersistence = {
     var state_data = JSON.parse(json_state_data);
     // console.dir(state_data);
     Game.setRandomSeed(state_data._randomSeed);
+    Game.UIMode.gamePlay.setupPlay();
     Game.switchUIMode(Game.UIMode.gamePlay);
   },
   newGame: function(){
     Game.setRandomSeed(5 + Math.floor(ROT.RNG.getUniform()*100000));
+    Game.UIMode.gamePlay.setupPlay();
     Game.switchUIMode(Game.UIMode.gamePlay);
   },
   localStorageAvailable: function () { // NOTE: see https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
