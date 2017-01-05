@@ -82,6 +82,12 @@ var Game = {
     this.renderAll();
   },
 
+  setRandomSeed: function(s) {
+    this._randomSeed = s;
+    console.log("using random seed "+this._randomSeed);
+    ROT.RNG.setSeed(this._randomSeed);
+  },
+
   renderAll: function() {
     if (this._curUIMode){
       this.renderMain();

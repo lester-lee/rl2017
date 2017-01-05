@@ -21,7 +21,7 @@ Game.UIMode.gameStart = {
     console.log("gamestart input");
     // ignore modding keys
     if (inputData.charCode !== 0){
-      Game.switchUIMode(Game.UIMode.gamePlay);
+      Game.switchUIMode(Game.UIMode.gamePersistence);
     }
   }
 };
@@ -97,6 +97,26 @@ Game.UIMode.gameLose = {
     console.log("gameLose input");
     if (inputData.keyCode == ROT.VK_ESCAPE){
       Game.switchUIMode(Game.UIMode.gameStart);
+    }
+  }
+};
+
+Game.UIMode.gamePersistence = {
+  enter: function(){
+    console.log("gamePersistence enter");
+    Game.Message.send('save, restore, or start a new game');
+  },
+  exit: function(){
+    console.log("gamePersistence exit");
+  },
+  render: function(display){
+    console.log("gamePersistence render");
+    display.drawText(1,2,"S to save, L to load, N for new game",fg,bg);
+  },
+  handleInput: function(inputType,inputData){
+    console.log("gamePersistence input");
+    if (inputData.charCode !== 0){
+      Game.switchUIMode(Game.UIMode.gamePlay);
     }
   }
 };
