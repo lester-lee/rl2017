@@ -36,6 +36,7 @@ window.onload = function() {
 // var display = new ROT.Display({width:80, height:24});
 
 var Game = {
+  PERSISTENCE_NAMESPACE: 'wsrlgame',
   _randomSeed: 0,
   _SPACING: 1.1,
   _display: {
@@ -62,7 +63,7 @@ var Game = {
     console.log("game init");
 
     // set up seed
-    this._randomSeed = 5 + Math.floor(Math.random()*100000);
+    this._randomSeed = 5 + Math.floor(ROT.RNG.getUniform()*100000);
     console.log("using random seed "+this._randomSeed);
     ROT.RNG.setSeed(this._randomSeed);
 
@@ -141,5 +142,10 @@ var Game = {
       this._curUIMode.enter();
     }
     this.renderAll();
+  },
+
+  toJSON: function(){
+    var json = {"_randomSeed":this._randomSeed};
+    return json;
   }
 };
