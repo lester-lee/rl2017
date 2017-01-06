@@ -116,7 +116,7 @@ var Game = {
     this._display.avatar.o.clear();
     if (this._curUIMode && this._curUIMode.hasOwnProperty('renderAvatar')){
       var d = this.getDisplay('avatar');
-      this._curUIMode.renderAvatar(d);
+      this._curUIMode.renderAvatarInfo(d);
     }
   },
 
