@@ -30,10 +30,12 @@ Game.UIMode.gameStart = {
 Game.UIMode.gamePlay = {
     attr: {
         _map: null,
-        _avatarX: 10,
-        _avatarY: 10,
-        _mapWidth: 60,
-        _mapHeight: 25,
+        _avatarX: 50,
+        _avatarY: 50,
+        _cameraX: 50,
+        _cameraY: 50,
+        _mapWidth: 100,
+        _mapHeight: 100,
         _wasd: 0,
         _wasdKeys: {
             1: ROT.VK_Z,
@@ -73,11 +75,13 @@ Game.UIMode.gamePlay = {
         display.drawText(1, 3, "press [W] to win", fg, bg);
         display.drawText(1, 4, "press [L] to lose", fg, bg);
         display.drawText(1, 5, "press [=] to save/load/new", fg, bg);
-        this.attr._map.renderOn(display);
+        this.attr._map.renderOn(display, this.attr._cameraX, this.attr._cameraY);
         this.renderAvatar(display);
     },
     renderAvatar: function(display) {
-        Game.Symbol.AVATAR.draw(display, this.attr._avatarX, this.attr._avatarY);
+        Game.Symbol.AVATAR.draw(display,
+            this.attr._avatarX - this.attr._cameraX + Math.round(display._options.width/2),
+            this.attr._avatarY - this.attr._cameraY + Math.round(display._options.height/2));
     },
     renderAvatarInfo: function(display) {
         display.drawText(1, 2, "avatar x:" + this.attr._avatarX, fg, bg); // DEV
@@ -86,7 +90,17 @@ Game.UIMode.gamePlay = {
     moveAvatar: function(dx, dy) {
         this.attr._avatarX = Math.min(Math.max(0, this.attr._avatarX + dx), this.attr._mapWidth);
         this.attr._avatarY = Math.min(Math.max(0, this.attr._avatarY + dy), this.attr._mapHeight);
-        // console.log(this.attr._avatarX + " " + this.attr._avatarY);
+        this.setCameraToAvatar();
+    },
+    moveCamera: function(dx, dy) {
+        this.setCamera(this.attr._cameraX + dx, this.attr._cameraY + dy)
+    },
+    setCamera: function(sx, sy) {
+        this.attr._cameraX = Math.min(Math.max(0, sx), this.attr._mapWidth);
+        this.attr._cameraY = Math.min(Math.max(0, sy), this.attr._mapHeight);
+    },
+    setCameraToAvatar: function() {
+        this.setCamera(this.attr._avatarX, this.attr._avatarY);
     },
     handleInput: function(inputType, inputData) {
         // console.log("gamePlay input");
@@ -94,7 +108,7 @@ Game.UIMode.gamePlay = {
         if (this.attr._wasd === 1) {
             movementKeys = this.attr._wasdKeys;
         }
-        console.log(inputData.keyCode);
+        // console.log(inputData.keyCode);
         if (inputType == 'keydown') {
             switch (inputData.keyCode) {
                 // Movement commands
