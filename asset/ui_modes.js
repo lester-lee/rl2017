@@ -60,6 +60,7 @@ Game.UIMode.gamePlay = {
             9: ROT.VK_NUMPAD9
         }
     },
+    JSON_KEY: 'uiMode_gamePlay',
     enter: function() {
         // console.log("gamePlay enter");
         Game.Message.send('a pair of star-crossed lovers take their life');
@@ -80,17 +81,22 @@ Game.UIMode.gamePlay = {
     },
     renderAvatar: function(display) {
         Game.Symbol.AVATAR.draw(display,
-            this.attr._avatarX - this.attr._cameraX + Math.round(display._options.width/2),
-            this.attr._avatarY - this.attr._cameraY + Math.round(display._options.height/2));
+            this.attr._avatarX - this.attr._cameraX + Math.round(display._options.width / 2),
+            this.attr._avatarY - this.attr._cameraY + Math.round(display._options.height / 2));
     },
     renderAvatarInfo: function(display) {
         display.drawText(1, 2, "avatar x:" + this.attr._avatarX, fg, bg); // DEV
         display.drawText(1, 3, "avatar y:" + this.attr._avatarY, fg, bg); // DEV
     },
     moveAvatar: function(dx, dy) {
-        this.attr._avatarX = Math.min(Math.max(0, this.attr._avatarX + dx), this.attr._mapWidth);
-        this.attr._avatarY = Math.min(Math.max(0, this.attr._avatarY + dy), this.attr._mapHeight);
-        this.setCameraToAvatar();
+        var newX = this.attr._avatarX + dx;
+        var newY = this.attr._avatarY + dy;
+        var nextTile = this.attr._map.getTile(newX, newY);
+        if (nextTile.getName() != 'wall') {
+            this.attr._avatarX = Math.min(Math.max(0, newX), this.attr._mapWidth);
+            this.attr._avatarY = Math.min(Math.max(0, newY), this.attr._mapHeight);
+            this.setCameraToAvatar();
+        }
     },
     moveCamera: function(dx, dy) {
         this.setCamera(this.attr._cameraX + dx, this.attr._cameraY + dy)
@@ -166,26 +172,59 @@ Game.UIMode.gamePlay = {
             }
         }
     },
-    setupPlay: function() {
+    setupPlay: function(loadData) {
         var mapTiles = Game.util.init2DArray(this.attr._mapWidth, this.attr._mapHeight, Game.Tile.nullTile);
-        var generator = new ROT.Map.Cellular(this.attr._mapWidth, this.attr._mapHeight);
-        generator.randomize(0.5);
+        var generator = new ROT.Map.Rogue(this.attr._mapWidth, this.attr._mapHeight);
+        /*
+                generator.randomize(0.65);
 
-        // repeated cellular automata process
-        var totalIterations = 3;
-        for (var i = 0; i < totalIterations - 1; i++) {
-            generator.create();
-        }
+                // repeated cellular automata process
+                var totalIterations = 3;
+                for (var i = 0; i < totalIterations - 1; i++) {
+                    generator.create();
+                }
 
-        //update map
+                //update map
+
+        */
         generator.create(function(x, y, v) {
-            if (v === 1) {
+            if (v === 0) {
                 mapTiles[x][y] = Game.Tile.floorTile;
             } else {
                 mapTiles[x][y] = Game.Tile.wallTile;
             }
         });
         this.attr._map = new Game.Map(mapTiles);
+        this.setupAvatar();
+        if (loadData !== undefined && loadData.hasOwnProperty(Game.UIMode.gamePlay.JSON_KEY)) {
+            this.fromJSON(loadData[Game.UIMode.gamePlay.JSON_KEY]);
+        }
+    },
+    setupAvatar: function() {
+        this.attr._avatarX = Math.round(ROT.RNG.getNormal(.5,.1) * this.attr._mapWidth);
+        this.attr._avatarY = Math.round(ROT.RNG.getNormal(.5,.1) * this.attr._mapHeight);
+
+        while (this.attr._map.getTile(this.attr._avatarX, this.attr._avatarY).getName() == 'wall') {
+            this.attr._avatarX++;
+            this.attr._avatarY++;
+        }
+        this.setCameraToAvatar();
+    },
+    toJSON: function() {
+        var json = {};
+        for (var at in this.attr) {
+            if (this.attr.hasOwnProperty(at) && at != '_map') {
+                json[at] = this.attr[at];
+            }
+        }
+        return json;
+    },
+    fromJSON: function(json) {
+        for (var at in this.attr) {
+            if (this.attr.hasOwnProperty(at) && at != '_map') {
+                this.attr[at] = json[at];
+            }
+        }
     }
 };
 
@@ -278,7 +317,7 @@ Game.UIMode.gamePersistence = {
         var state_data = JSON.parse(json_state_data);
         // console.dir(state_data);
         Game.setRandomSeed(state_data._randomSeed);
-        Game.UIMode.gamePlay.setupPlay();
+        Game.UIMode.gamePlay.setupPlay(state_data);
         Game.switchUIMode(Game.UIMode.gamePlay);
     },
     newGame: function() {

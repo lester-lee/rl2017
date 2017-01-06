@@ -27,7 +27,6 @@ Game.Map.prototype.renderOn = function(display, camX, camY) {
     var dispH = display._options.height;
     var xStart = camX-Math.round(dispW / 2);
     var yStart = camY-Math.round(dispH / 2);
-    console.log(xStart + ' ' + yStart);
     for (var x = 0; x < dispW; x++) {
         for (var y = 0; y < dispH; y++) {
             var tile = this.getTile(x+xStart, y+yStart);
