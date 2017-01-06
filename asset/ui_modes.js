@@ -94,6 +94,7 @@ Game.UIMode.gamePlay = {
         if (this.attr._wasd === 1) {
             movementKeys = this.attr._wasdKeys;
         }
+        console.log(inputData.keyCode);
         if (inputType == 'keydown') {
             switch (inputData.keyCode) {
                 // Movement commands
@@ -123,6 +124,9 @@ Game.UIMode.gamePlay = {
                     break;
                 case movementKeys[9]:
                     this.moveAvatar(1, -1);
+                    break;
+                case ROT.VK_BACK_SLASH:
+                    this.attr._wasd = (this.attr._wasd === 0) ? 1 : 0;
                     break;
                 default:
                     break;
