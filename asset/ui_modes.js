@@ -102,6 +102,7 @@ Game.UIMode.gamePlay = {
         if (nextTile.getName() != 'wall') {
             this.attr._avatarX = Math.min(Math.max(0, newX), this.attr._mapWidth);
             this.attr._avatarY = Math.min(Math.max(0, newY), this.attr._mapHeight);
+            Game.refresh();
             this.checkMoveCamera();
         }
     },
@@ -113,14 +114,20 @@ Game.UIMode.gamePlay = {
         var display = Game.getDisplay('main');
         var dispW = display._options.width;
         var dispH = display._options.height;
-        if (this.attr._avX < Math.round(.3 * dispW)) {
+        if (this.attr._avX < Math.round(.35 * dispW)) {
+            console.log('left');
             this.moveCamera(-1, 0);
-        } else if (this.attr._avX > Math.round(.7 * dispW)) {
+        }
+        if (this.attr._avX > Math.round(.65 * dispW)) {
+            console.log('right');
             this.moveCamera(1, 0);
         }
-        if (this.attr._avY < Math.round(.3 * dispH)) {
+        if (this.attr._avY < Math.round(.35 * dispH)) {
+            console.log('up');
             this.moveCamera(0, -1);
-        } else if (this.attr._avY > Math.round(.7 * dispH)) {
+        }
+        if (this.attr._avY > Math.round(.65 * dispH)) {
+            console.log('down');
             this.moveCamera(0, 1);
         }
     },
@@ -128,8 +135,11 @@ Game.UIMode.gamePlay = {
         this.setCamera(this.attr._cameraX + dx, this.attr._cameraY + dy)
     },
     setCamera: function(sx, sy) {
-        this.attr._cameraX = Math.min(Math.max(0, sx), this.attr._mapWidth);
-        this.attr._cameraY = Math.min(Math.max(0, sy), this.attr._mapHeight);
+        var display = Game.getDisplay('main');
+        var dispW2 = Math.round(display._options.width / 2);
+        var dispH2 = Math.round(display._options.height / 2);
+        this.attr._cameraX = Math.min(Math.max(dispW2, sx), this.attr._mapWidth - dispW2);
+        this.attr._cameraY = Math.min(Math.max(dispH2, sy), this.attr._mapHeight - dispH2);
     },
     setCameraToAvatar: function() {
         this.setCamera(this.attr._avatarX, this.attr._avatarY);
@@ -177,7 +187,6 @@ Game.UIMode.gamePlay = {
                 default:
                     break;
             }
-            Game.refresh();
         } else {
             switch (inputData.keyCode) {
                 case ROT.VK_L:
