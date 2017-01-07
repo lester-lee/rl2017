@@ -61,12 +61,6 @@ var Game = {
 
     init: function() {
         console.log("game init");
-
-        // set up seed
-        this._randomSeed = 5 + Math.floor(ROT.RNG.getUniform() * 100000);
-        console.log("using random seed " + this._randomSeed);
-        ROT.RNG.setSeed(this._randomSeed);
-
         // set up displays
         for (var display_key in this._display) {
             this._display[display_key].o = new ROT.Display({

@@ -32,6 +32,8 @@ Game.UIMode.gamePlay = {
         _map: null,
         _avatarX: 50,
         _avatarY: 50,
+        _avX: 50,
+        _avY: 50,
         _cameraX: 50,
         _cameraY: 50,
         _mapWidth: 100,
@@ -80,13 +82,18 @@ Game.UIMode.gamePlay = {
         this.renderAvatar(display);
     },
     renderAvatar: function(display) {
-        Game.Symbol.AVATAR.draw(display,
-            this.attr._avatarX - this.attr._cameraX + Math.round(display._options.width / 2),
-            this.attr._avatarY - this.attr._cameraY + Math.round(display._options.height / 2));
+        var avX = this.attr._avatarX - this.attr._cameraX + Math.round(display._options.width / 2);
+        var avY = this.attr._avatarY - this.attr._cameraY + Math.round(display._options.height / 2);
+        Game.Symbol.AVATAR.draw(display, avX, avY);
+
+        this.attr._avX = avX;
+        this.attr._avY = avY;
     },
     renderAvatarInfo: function(display) {
         display.drawText(1, 2, "avatar x:" + this.attr._avatarX, fg, bg); // DEV
         display.drawText(1, 3, "avatar y:" + this.attr._avatarY, fg, bg); // DEV
+        display.drawText(1, 4, "camera x:" + this.attr._cameraX, fg, bg); // DEV
+        display.drawText(1, 5, "camera y:" + this.attr._cameraY, fg, bg); // DEV
     },
     moveAvatar: function(dx, dy) {
         var newX = this.attr._avatarX + dx;
@@ -95,7 +102,26 @@ Game.UIMode.gamePlay = {
         if (nextTile.getName() != 'wall') {
             this.attr._avatarX = Math.min(Math.max(0, newX), this.attr._mapWidth);
             this.attr._avatarY = Math.min(Math.max(0, newY), this.attr._mapHeight);
-            this.setCameraToAvatar();
+            this.checkMoveCamera();
+        }
+    },
+    checkMoveCamera: function() {
+        // camera follows player
+        // this.setCameraToAvatar();
+
+        // camera scrolls when player reaches threshold
+        var display = Game.getDisplay('main');
+        var dispW = display._options.width;
+        var dispH = display._options.height;
+        if (this.attr._avX < Math.round(.3 * dispW)) {
+            this.moveCamera(-1, 0);
+        } else if (this.attr._avX > Math.round(.7 * dispW)) {
+            this.moveCamera(1, 0);
+        }
+        if (this.attr._avY < Math.round(.3 * dispH)) {
+            this.moveCamera(0, -1);
+        } else if (this.attr._avY > Math.round(.7 * dispH)) {
+            this.moveCamera(0, 1);
         }
     },
     moveCamera: function(dx, dy) {
@@ -201,8 +227,8 @@ Game.UIMode.gamePlay = {
         }
     },
     setupAvatar: function() {
-        this.attr._avatarX = Math.round(ROT.RNG.getNormal(.5,.1) * this.attr._mapWidth);
-        this.attr._avatarY = Math.round(ROT.RNG.getNormal(.5,.1) * this.attr._mapHeight);
+        this.attr._avatarX = Math.round(ROT.RNG.getNormal(.5, .1) * this.attr._mapWidth);
+        this.attr._avatarY = Math.round(ROT.RNG.getNormal(.5, .1) * this.attr._mapHeight);
 
         while (this.attr._map.getTile(this.attr._avatarX, this.attr._avatarY).getName() == 'wall') {
             this.attr._avatarX++;
