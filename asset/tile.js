@@ -7,10 +7,6 @@ Game.Tile = function(properties) {
 
 Game.Tile.extend(Game.Symbol);
 
-Game.Tile.prototype.getSymbol = function() {
-    return this.attr._sym;
-};
-
 Game.Tile.prototype.getName = function() {
     return this.attr._name;
 }

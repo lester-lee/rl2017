@@ -30,10 +30,7 @@ Game.UIMode.gameStart = {
 Game.UIMode.gamePlay = {
     attr: {
         _map: null,
-        _avatarX: 50,
-        _avatarY: 50,
-        _avX: 50,
-        _avY: 50,
+        _avatar: null,
         _cameraX: 50,
         _cameraY: 50,
         _mapWidth: 100,
@@ -60,7 +57,7 @@ Game.UIMode.gamePlay = {
             7: ROT.VK_NUMPAD7,
             8: ROT.VK_NUMPAD8,
             9: ROT.VK_NUMPAD9
-        },
+        }
     },
     JSON_KEY: 'uiMode_gamePlay',
     enter: function() {
@@ -82,26 +79,24 @@ Game.UIMode.gamePlay = {
         this.renderAvatar(display);
     },
     renderAvatar: function(display) {
-        var avX = this.attr._avatarX - this.attr._cameraX + Math.round(display._options.width / 2);
-        var avY = this.attr._avatarY - this.attr._cameraY + Math.round(display._options.height / 2);
+        var avX = this.attr._avatar.getX() - this.attr._cameraX + Math.round(display._options.width / 2);
+        var avY = this.attr._avatar.getY() - this.attr._cameraY + Math.round(display._options.height / 2);
+        this.attr._avatar.setDisplayPos(avX, avY);
         Game.Symbol.AVATAR.draw(display, avX, avY);
-
-        this.attr._avX = avX;
-        this.attr._avY = avY;
     },
     renderAvatarInfo: function(display) {
-        display.drawText(1, 2, "avatar x:" + this.attr._avatarX, fg, bg); // DEV
-        display.drawText(1, 3, "avatar y:" + this.attr._avatarY, fg, bg); // DEV
+        display.drawText(1, 2, "avatar x:" + this.attr._avatar.getX(), fg, bg); // DEV
+        display.drawText(1, 3, "avatar y:" + this.attr._avatar.getY(), fg, bg); // DEV
         display.drawText(1, 4, "camera x:" + this.attr._cameraX, fg, bg); // DEV
         display.drawText(1, 5, "camera y:" + this.attr._cameraY, fg, bg); // DEV
     },
     moveAvatar: function(dx, dy) {
-        var newX = this.attr._avatarX + dx;
-        var newY = this.attr._avatarY + dy;
+        var newX = this.attr._avatar.getX() + dx;
+        var newY = this.attr._avatar.getY() + dy;
         var nextTile = this.attr._map.getTile(newX, newY);
         if (nextTile.getName() != 'wall') {
-            this.attr._avatarX = Math.min(Math.max(0, newX), this.attr._mapWidth);
-            this.attr._avatarY = Math.min(Math.max(0, newY), this.attr._mapHeight);
+            this.attr._avatar.setX(Math.min(Math.max(0, newX), this.attr._mapWidth));
+            this.attr._avatar.setY(Math.min(Math.max(0, newY), this.attr._mapHeight));
             Game.refresh();
             this.checkMoveCamera();
         }
@@ -124,22 +119,22 @@ Game.UIMode.gamePlay = {
         this.attr._cameraY = Math.min(Math.max(dispH2, sy), this.attr._mapHeight - dispH2);
     },
     setCameraToAvatar: function() {
-        this.setCamera(this.attr._avatarX, this.attr._avatarY);
+        this.setCamera(this.attr._avatar.getX(), this.attr._avatar.getY());
     },
     setWindowCamera: function(min,max){
       var display = Game.getDisplay('main');
       var dispW = display._options.width;
       var dispH = display._options.height;
-      if (this.attr._avX < Math.round(min * dispW)) {
+      if (this.attr._avatar.getdispX() < Math.round(min * dispW)) {
           this.moveCamera(-1, 0);
       }
-      if (this.attr._avX > Math.round(max * dispW)) {
+      if (this.attr._avatar.getdispX() > Math.round(max * dispW)) {
           this.moveCamera(1, 0);
       }
-      if (this.attr._avY < Math.round(min * dispH)) {
+      if (this.attr._avatar.getdispY() < Math.round(min * dispH)) {
           this.moveCamera(0, -1);
       }
-      if (this.attr._avY > Math.round(max * dispH)) {
+      if (this.attr._avatar.getdispY() > Math.round(max * dispH)) {
           this.moveCamera(0, 1);
       }
     },
@@ -236,14 +231,16 @@ Game.UIMode.gamePlay = {
         }
     },
     setupAvatar: function() {
-        this.attr._avatarX = Math.round(ROT.RNG.getNormal(.5, .1) * this.attr._mapWidth);
-        this.attr._avatarY = Math.round(ROT.RNG.getNormal(.5, .1) * this.attr._mapHeight);
-
-        while (this.attr._map.getTile(this.attr._avatarX, this.attr._avatarY).getName() == 'wall') {
-            this.attr._avatarX++;
-            this.attr._avatarY++;
-        }
-        this.setCameraToAvatar();
+      var avatar = new Game.Entity(Game.EntityTemplates.Avatar);
+      var avMapX = Math.round(ROT.RNG.getNormal(.5, .1) * this.attr._mapWidth);
+      var avMapY = Math.round(ROT.RNG.getNormal(.5, .1) * this.attr._mapHeight);
+      while (this.attr._map.getTile(avMapX, avMapY).getName() == 'wall') {
+            avMapX++;
+            avMapY++;
+      }
+      avatar.setPos(avMapX, avMapY);
+      this.attr._avatar = avatar;
+      this.setCameraToAvatar();
     },
     toJSON: function() {
         var json = {};
