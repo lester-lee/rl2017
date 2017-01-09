@@ -85,25 +85,24 @@ Game.UIMode.gamePlay = {
         Game.Symbol.AVATAR.draw(display, avX, avY);
     },
     renderAvatarInfo: function(display) {
-    //     display.drawText(1, 2, "avatar x:" + this.attr._avatar.getX(), fg, bg); // DEV
-    //     display.drawText(1, 3, "avatar y:" + this.attr._avatar.getY(), fg, bg); // DEV
-    //     display.drawText(1, 4, "camera x:" + this.attr._cameraX, fg, bg); // DEV
-    //     display.drawText(1, 5, "camera y:" + this.attr._cameraY, fg, bg); // DEV
-      display.drawText(1,1, "HP: " + this.attr._avatar.getCurHP() + "/" + this.attr._avatar.getMaxHP());
-
+        //     display.drawText(1, 2, "avatar x:" + this.attr._avatar.getX(), fg, bg); // DEV
+        //     display.drawText(1, 3, "avatar y:" + this.attr._avatar.getY(), fg, bg); // DEV
+        //     display.drawText(1, 4, "camera x:" + this.attr._cameraX, fg, bg); // DEV
+        //     display.drawText(1, 5, "camera y:" + this.attr._cameraY, fg, bg); // DEV
+        display.drawText(1, 1, "HP: " + this.attr._avatar.getCurHP() + "/" + this.attr._avatar.getMaxHP());
     },
     moveAvatar: function(dx, dy) {
-      if (this.attr._avatar.tryWalk(this.attr._map,dx,dy)){
-        Game.refresh();
-        this.checkMoveCamera();
-      }
+        if (this.attr._avatar.tryWalk(this.attr._map, dx, dy)) {
+            Game.refresh();
+            this.checkMoveCamera();
+        }
     },
     checkMoveCamera: function() {
         // camera follows player
         // this.setCameraToAvatar();
 
         // camera scrolls when player reaches threshold
-        this.setWindowCamera(.35,.65);
+        this.setWindowCamera(.35, .65);
     },
     moveCamera: function(dx, dy) {
         this.setCamera(this.attr._cameraX + dx, this.attr._cameraY + dy)
@@ -118,38 +117,27 @@ Game.UIMode.gamePlay = {
     setCameraToAvatar: function() {
         this.setCamera(this.attr._avatar.getPos().x, this.attr._avatar.getPos().y);
     },
-    setWindowCamera: function(min,max){
-      var display = Game.getDisplay('main');
-      var dispW = display._options.width;
-      var dispH = display._options.height;
-      if (this.attr._avatar.getDispPos().x < Math.round(min * dispW)) {
-          this.moveCamera(-1, 0);
-      }
-      if (this.attr._avatar.getDispPos().x > Math.round(max * dispW)) {
-          this.moveCamera(1, 0);
-      }
-      if (this.attr._avatar.getDispPos().y < Math.round(min * dispH)) {
-          this.moveCamera(0, -1);
-      }
-      if (this.attr._avatar.getDispPos().y > Math.round(max * dispH)) {
-          this.moveCamera(0, 1);
-      }
+    setWindowCamera: function(min, max) {
+        var display = Game.getDisplay('main');
+        var dispW = display._options.width;
+        var dispH = display._options.height;
+        if (this.attr._avatar.getDispPos().x < Math.round(min * dispW)) {
+            this.moveCamera(-1, 0);
+        }
+        if (this.attr._avatar.getDispPos().x > Math.round(max * dispW)) {
+            this.moveCamera(1, 0);
+        }
+        if (this.attr._avatar.getDispPos().y < Math.round(min * dispH)) {
+            this.moveCamera(0, -1);
+        }
+        if (this.attr._avatar.getDispPos().y > Math.round(max * dispH)) {
+            this.moveCamera(0, 1);
+        }
     },
     setupPlay: function(loadData) {
         var mapTiles = Game.Util.init2DArray(this.attr._mapWidth, this.attr._mapHeight, Game.Tile.nullTile);
         var generator = new ROT.Map.Rogue(this.attr._mapWidth, this.attr._mapHeight);
-        /*
-                generator.randomize(0.65);
 
-                // repeated cellular automata process
-                var totalIterations = 3;
-                for (var i = 0; i < totalIterations - 1; i++) {
-                    generator.create();
-                }
-
-                //update map
-
-        */
         generator.create(function(x, y, v) {
             if (v === 0) {
                 mapTiles[x][y] = Game.Tile.floorTile;
@@ -164,11 +152,11 @@ Game.UIMode.gamePlay = {
         }
     },
     setupAvatar: function() {
-      var avatar = new Game.Entity(Game.EntityTemplates.Avatar);
-      var pos = this.attr._map.getWalkableTilePos();
-      avatar.setPos(pos);
-      this.attr._avatar = avatar;
-      this.setCameraToAvatar();
+        var avatar = new Game.Entity(Game.EntityTemplates.Avatar);
+        var pos = this.attr._map.getWalkableTilePos();
+        avatar.setPos(pos);
+        this.attr._avatar = avatar;
+        this.setCameraToAvatar();
     },
     handleInput: function(inputType, inputData) {
         // console.log("gamePlay input");
@@ -235,20 +223,10 @@ Game.UIMode.gamePlay = {
         }
     },
     toJSON: function() {
-        var json = {};
-        for (var at in this.attr) {
-            if (this.attr.hasOwnProperty(at) && at != '_map') {
-                json[at] = this.attr[at];
-            }
-        }
-        return json;
+        return Game.UIMode.gamePersistence.BASE_toJSON.call(this);
     },
     fromJSON: function(json) {
-        for (var at in this.attr) {
-            if (this.attr.hasOwnProperty(at) && at != '_map') {
-                this.attr[at] = json[at];
-            }
-        }
+        return Game.UIMode.gamePersistence.BASE_fromJSON.call(json, this);
     }
 };
 
@@ -358,6 +336,38 @@ Game.UIMode.gamePersistence = {
         } catch (e) {
             Game.Message.send('Sorry, no local data storage is available for this browser');
             return false;
+        }
+    },
+    BASE_toJSON: function(state_hash_name) {
+        var state = this.attr;
+        if (state_hash_name) {
+            state = this[state_hash_name];
+        }
+        var json = {};
+        for (var at in state) {
+            if (state.hasOwnProperty(at)) {
+                if (state[at] instanceof Object && 'toJSON' in state[at]) {
+                    json[at] = state[at].toJSON();
+                } else {
+                    json[at] = state[at];
+                }
+            }
+        }
+        return json;
+    },
+    BASE_fromJSON: function(json, state_hash_name) {
+        var using_state_hash = 'attr';
+        if (state_hash_name) {
+            using_state_hash = state_hash_name;
+        }
+        console.dir(this);
+        for (var at in this[using_state_hash]) {
+          console.dir(this[using_state_hash][at]);
+            if (this[using_state_hash][at] instanceof Object && 'fromJSON' in this[using_state_hash][at]) {
+                this[using_state_hash][at].fromJSON(json[at]);
+            } else {
+                this[using_state_hash][at] = json[at];
+            }
         }
     }
 };

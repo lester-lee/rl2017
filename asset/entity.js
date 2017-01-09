@@ -64,3 +64,12 @@ Game.Entity.prototype.setDispPos = function(pos){
 Game.Entity.prototype.getDispPos = function(){
   return this.attr._dispPos;
 };
+
+Game.Entity.prototype.toJSON = function(){
+  var json = Game.UIMode.gamePersistence.BASE_toJSON.call(this);
+  return json;
+};
+
+Game.Entity.prototype.fromJSON = function(json){
+  Game.UIMode.gamePersistence.fromJSON.call(json, this);
+};
