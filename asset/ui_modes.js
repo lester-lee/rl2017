@@ -60,7 +60,7 @@ Game.UIMode.gamePlay = {
             7: ROT.VK_NUMPAD7,
             8: ROT.VK_NUMPAD8,
             9: ROT.VK_NUMPAD9
-        }
+        },
     },
     JSON_KEY: 'uiMode_gamePlay',
     enter: function() {
@@ -111,25 +111,7 @@ Game.UIMode.gamePlay = {
         // this.setCameraToAvatar();
 
         // camera scrolls when player reaches threshold
-        var display = Game.getDisplay('main');
-        var dispW = display._options.width;
-        var dispH = display._options.height;
-        if (this.attr._avX < Math.round(.35 * dispW)) {
-            console.log('left');
-            this.moveCamera(-1, 0);
-        }
-        if (this.attr._avX > Math.round(.65 * dispW)) {
-            console.log('right');
-            this.moveCamera(1, 0);
-        }
-        if (this.attr._avY < Math.round(.35 * dispH)) {
-            console.log('up');
-            this.moveCamera(0, -1);
-        }
-        if (this.attr._avY > Math.round(.65 * dispH)) {
-            console.log('down');
-            this.moveCamera(0, 1);
-        }
+        this.setWindowCamera(.35,.65);
     },
     moveCamera: function(dx, dy) {
         this.setCamera(this.attr._cameraX + dx, this.attr._cameraY + dy)
@@ -143,6 +125,23 @@ Game.UIMode.gamePlay = {
     },
     setCameraToAvatar: function() {
         this.setCamera(this.attr._avatarX, this.attr._avatarY);
+    },
+    setWindowCamera: function(min,max){
+      var display = Game.getDisplay('main');
+      var dispW = display._options.width;
+      var dispH = display._options.height;
+      if (this.attr._avX < Math.round(min * dispW)) {
+          this.moveCamera(-1, 0);
+      }
+      if (this.attr._avX > Math.round(max * dispW)) {
+          this.moveCamera(1, 0);
+      }
+      if (this.attr._avY < Math.round(min * dispH)) {
+          this.moveCamera(0, -1);
+      }
+      if (this.attr._avY > Math.round(max * dispH)) {
+          this.moveCamera(0, 1);
+      }
     },
     handleInput: function(inputType, inputData) {
         // console.log("gamePlay input");
