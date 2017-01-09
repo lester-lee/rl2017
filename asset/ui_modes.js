@@ -91,15 +91,10 @@ Game.UIMode.gamePlay = {
         display.drawText(1, 5, "camera y:" + this.attr._cameraY, fg, bg); // DEV
     },
     moveAvatar: function(dx, dy) {
-        var newX = this.attr._avatar.getX() + dx;
-        var newY = this.attr._avatar.getY() + dy;
-        var nextTile = this.attr._map.getTile(newX, newY);
-        if (nextTile.getName() != 'wall') {
-            this.attr._avatar.setX(Math.min(Math.max(0, newX), this.attr._mapWidth));
-            this.attr._avatar.setY(Math.min(Math.max(0, newY), this.attr._mapHeight));
-            Game.refresh();
-            this.checkMoveCamera();
-        }
+      if (this.attr._avatar.tryWalk(this.attr._map,dx,dy)){
+        Game.refresh();
+        this.checkMoveCamera();
+      }
     },
     checkMoveCamera: function() {
         // camera follows player

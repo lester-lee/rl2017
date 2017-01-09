@@ -1,15 +1,31 @@
-Game.Entity = function(properties){
-  properties = properties || {};
-  Game.Symbol.call(this, properties);
+Game.Entity = function(template){
+  template = template || {};
+  Game.Symbol.call(this, template);
   if (!('attr' in this)) { this.attr = {}; }
-  this.attr._name = properties.name || '';
-  this.attr._x = properties.x || 0;
-  this.attr._y = properties.y || 0;
+  this.attr._name = template.name || '';
+  this.attr._x = template.x || 0;
+  this.attr._y = template.y || 0;
   this.attr._dispX = 0;
   this.attr._dispY = 0;
 
   this._entityID = Game.util.randomString(16);
   Game.ALL_ENTITIES[this._entityID] = this;
+
+  // mixin/traits
+  this._traitTracker = {};
+  if (template.hasOwnProperty('traits')){
+    for (var i=0; i < template.traits.length; i++){
+      var trait = template.traits[i];
+      this._traitTracker[trait.META.traitName] = true;
+      this._traitTracker[trait.META.traitGroup] = true;
+      for (var traitProp in traitProp != 'META' && trait){
+        this[traitProp] = trait[traitProp];
+      }
+    }
+    if (trait.META.hasOwnProperty('init')){
+      trait.META.init.call(this,template);
+    }
+  }
 };
 
 Game.Entity.extend(Game.Symbol);
