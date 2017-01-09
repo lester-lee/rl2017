@@ -38,7 +38,7 @@ Game.UIMode.gamePlay = {
         _cameraY: 50,
         _mapWidth: 100,
         _mapHeight: 100,
-        _wasd: 0,
+        _wasd: 1,
         _wasdKeys: {
             1: ROT.VK_Z,
             2: ROT.VK_X,
@@ -181,6 +181,7 @@ Game.UIMode.gamePlay = {
                     this.moveAvatar(1, -1);
                     break;
                 case ROT.VK_BACK_SLASH:
+                    // change movement input keys
                     this.attr._wasd = (this.attr._wasd === 0) ? 1 : 0;
                     break;
                 default:

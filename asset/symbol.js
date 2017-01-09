@@ -1,8 +1,9 @@
-Game.Symbol = function(chr, fgcolor, bgcolor) {
+  Game.Symbol = function(properties) {
+    properties = properties || {};
     this.attr = {
-        _char: chr,
-        _fg: fgcolor || Game.UIMode.DEFAULT_FG,
-        _bg: bgcolor || Game.UIMode.DEFAULT_BG
+        _char: properties.chr,
+        _fg: properties.fg || Game.UIMode.DEFAULT_FG,
+        _bg: properties.bg || Game.UIMode.DEFAULT_BG
     };
 };
 
@@ -22,4 +23,4 @@ Game.Symbol.prototype.draw = function(display, x, y) {
     display.draw(x, y, this.attr._char, this.attr._fg, this.attr._bg);
 };
 
-Game.Symbol.AVATAR = new Game.Symbol('@', '#f00');
+Game.Symbol.AVATAR = new Game.Symbol({chr:'@',fg:'#f00'});
