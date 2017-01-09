@@ -79,16 +79,18 @@ Game.UIMode.gamePlay = {
         this.renderAvatar(display);
     },
     renderAvatar: function(display) {
-        var avX = this.attr._avatar.getX() - this.attr._cameraX + Math.round(display._options.width / 2);
-        var avY = this.attr._avatar.getY() - this.attr._cameraY + Math.round(display._options.height / 2);
-        this.attr._avatar.setDisplayPos(avX, avY);
+        var avX = this.attr._avatar.getPos().x - this.attr._cameraX + Math.round(display._options.width / 2);
+        var avY = this.attr._avatar.getPos().y - this.attr._cameraY + Math.round(display._options.height / 2);
+        this.attr._avatar.setDispPos(new Game.Coordinate(avX, avY));
         Game.Symbol.AVATAR.draw(display, avX, avY);
     },
     renderAvatarInfo: function(display) {
-        display.drawText(1, 2, "avatar x:" + this.attr._avatar.getX(), fg, bg); // DEV
-        display.drawText(1, 3, "avatar y:" + this.attr._avatar.getY(), fg, bg); // DEV
-        display.drawText(1, 4, "camera x:" + this.attr._cameraX, fg, bg); // DEV
-        display.drawText(1, 5, "camera y:" + this.attr._cameraY, fg, bg); // DEV
+    //     display.drawText(1, 2, "avatar x:" + this.attr._avatar.getX(), fg, bg); // DEV
+    //     display.drawText(1, 3, "avatar y:" + this.attr._avatar.getY(), fg, bg); // DEV
+    //     display.drawText(1, 4, "camera x:" + this.attr._cameraX, fg, bg); // DEV
+    //     display.drawText(1, 5, "camera y:" + this.attr._cameraY, fg, bg); // DEV
+      display.drawText(1,1, "HP: " + this.attr._avatar.getCurHP() + "/" + this.attr._avatar.getMaxHP());
+
     },
     moveAvatar: function(dx, dy) {
       if (this.attr._avatar.tryWalk(this.attr._map,dx,dy)){
@@ -114,24 +116,59 @@ Game.UIMode.gamePlay = {
         this.attr._cameraY = Math.min(Math.max(dispH2, sy), this.attr._mapHeight - dispH2);
     },
     setCameraToAvatar: function() {
-        this.setCamera(this.attr._avatar.getX(), this.attr._avatar.getY());
+        this.setCamera(this.attr._avatar.getPos().x, this.attr._avatar.getPos().y);
     },
     setWindowCamera: function(min,max){
       var display = Game.getDisplay('main');
       var dispW = display._options.width;
       var dispH = display._options.height;
-      if (this.attr._avatar.getdispX() < Math.round(min * dispW)) {
+      if (this.attr._avatar.getDispPos().x < Math.round(min * dispW)) {
           this.moveCamera(-1, 0);
       }
-      if (this.attr._avatar.getdispX() > Math.round(max * dispW)) {
+      if (this.attr._avatar.getDispPos().x > Math.round(max * dispW)) {
           this.moveCamera(1, 0);
       }
-      if (this.attr._avatar.getdispY() < Math.round(min * dispH)) {
+      if (this.attr._avatar.getDispPos().y < Math.round(min * dispH)) {
           this.moveCamera(0, -1);
       }
-      if (this.attr._avatar.getdispY() > Math.round(max * dispH)) {
+      if (this.attr._avatar.getDispPos().y > Math.round(max * dispH)) {
           this.moveCamera(0, 1);
       }
+    },
+    setupPlay: function(loadData) {
+        var mapTiles = Game.Util.init2DArray(this.attr._mapWidth, this.attr._mapHeight, Game.Tile.nullTile);
+        var generator = new ROT.Map.Rogue(this.attr._mapWidth, this.attr._mapHeight);
+        /*
+                generator.randomize(0.65);
+
+                // repeated cellular automata process
+                var totalIterations = 3;
+                for (var i = 0; i < totalIterations - 1; i++) {
+                    generator.create();
+                }
+
+                //update map
+
+        */
+        generator.create(function(x, y, v) {
+            if (v === 0) {
+                mapTiles[x][y] = Game.Tile.floorTile;
+            } else {
+                mapTiles[x][y] = Game.Tile.wallTile;
+            }
+        });
+        this.attr._map = new Game.Map(mapTiles);
+        this.setupAvatar();
+        if (loadData !== undefined && loadData.hasOwnProperty(Game.UIMode.gamePlay.JSON_KEY)) {
+            this.fromJSON(loadData[Game.UIMode.gamePlay.JSON_KEY]);
+        }
+    },
+    setupAvatar: function() {
+      var avatar = new Game.Entity(Game.EntityTemplates.Avatar);
+      var pos = this.attr._map.getWalkableTilePos();
+      avatar.setPos(pos);
+      this.attr._avatar = avatar;
+      this.setCameraToAvatar();
     },
     handleInput: function(inputType, inputData) {
         // console.log("gamePlay input");
@@ -196,46 +233,6 @@ Game.UIMode.gamePlay = {
                     break;
             }
         }
-    },
-    setupPlay: function(loadData) {
-        var mapTiles = Game.util.init2DArray(this.attr._mapWidth, this.attr._mapHeight, Game.Tile.nullTile);
-        var generator = new ROT.Map.Rogue(this.attr._mapWidth, this.attr._mapHeight);
-        /*
-                generator.randomize(0.65);
-
-                // repeated cellular automata process
-                var totalIterations = 3;
-                for (var i = 0; i < totalIterations - 1; i++) {
-                    generator.create();
-                }
-
-                //update map
-
-        */
-        generator.create(function(x, y, v) {
-            if (v === 0) {
-                mapTiles[x][y] = Game.Tile.floorTile;
-            } else {
-                mapTiles[x][y] = Game.Tile.wallTile;
-            }
-        });
-        this.attr._map = new Game.Map(mapTiles);
-        this.setupAvatar();
-        if (loadData !== undefined && loadData.hasOwnProperty(Game.UIMode.gamePlay.JSON_KEY)) {
-            this.fromJSON(loadData[Game.UIMode.gamePlay.JSON_KEY]);
-        }
-    },
-    setupAvatar: function() {
-      var avatar = new Game.Entity(Game.EntityTemplates.Avatar);
-      var avMapX = Math.round(ROT.RNG.getNormal(.5, .1) * this.attr._mapWidth);
-      var avMapY = Math.round(ROT.RNG.getNormal(.5, .1) * this.attr._mapHeight);
-      while (this.attr._map.getTile(avMapX, avMapY).getName() == 'wall') {
-            avMapX++;
-            avMapY++;
-      }
-      avatar.setPos(avMapX, avMapY);
-      this.attr._avatar = avatar;
-      this.setCameraToAvatar();
     },
     toJSON: function() {
         var json = {};

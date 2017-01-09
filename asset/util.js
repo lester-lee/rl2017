@@ -1,4 +1,4 @@
-Game.util = {
+Game.Util = {
   randomString: function (len) {
     var charSource = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
     var res='';
