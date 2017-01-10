@@ -52,7 +52,7 @@ Game.Entity.prototype.hasTrait = function(check) {
 }
 
 Game.Entity.prototype.getID = function() {
-    return this.attr._ID;
+    return this._ID;
 }
 
 Game.Entity.prototype.getMap = function() {

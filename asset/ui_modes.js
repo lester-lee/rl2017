@@ -88,25 +88,25 @@ Game.UIMode.gamePlay = {
         // display.drawText(1, 3, "press [W] to win", fg, bg);
         // display.drawText(1, 4, "press [L] to lose", fg, bg);
         // display.drawText(1, 5, "press [=] to save/load/new", fg, bg);
-        this.attr._map.renderOn(display, this.attr._cameraX, this.attr._cameraY);
-        // this.renderAvatar(display);
+        this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY);
+        this.renderAvatar(display);
     },
     renderAvatar: function(display) {
-        var avX = this.attr._avatar.getPos().x - this.attr._cameraX + Math.round(display._options.width / 2);
-        var avY = this.attr._avatar.getPos().y - this.attr._cameraY + Math.round(display._options.height / 2);
-        this.attr._avatar.setDispPos(new Game.Coordinate(avX, avY));
+        var avX = this.getAvatar().getPos().x - this.attr._cameraX + Math.round(display._options.width / 2);
+        var avY = this.getAvatar().getPos().y - this.attr._cameraY + Math.round(display._options.height / 2);
+        this.getAvatar().setDispPos(new Game.Coordinate(avX, avY));
         Game.DATASTORE.ENTITY[this.attr._avatarID].draw(display, avX, avY);
     },
     renderAvatarInfo: function(display) {
-        //     display.drawText(1, 2, "avatar x:" + this.attr._avatar.getX(), fg, bg); // DEV
-        //     display.drawText(1, 3, "avatar y:" + this.attr._avatar.getY(), fg, bg); // DEV
-        //     display.drawText(1, 4, "camera x:" + this.attr._cameraX, fg, bg); // DEV
-        //     display.drawText(1, 5, "camera y:" + this.attr._cameraY, fg, bg); // DEV
-        display.drawText(1, 1, "HP: " + this.attr._avatar.getCurHP() + "/" + this.attr._avatar.getMaxHP());
-        display.drawText(1, 3, "Turns taken: " + this.attr._avatar.getTurns());
+        display.drawText(1, 2, "avatar x:" + this.getAvatar().getPos().x, fg, bg); // DEV
+        display.drawText(1, 3, "avatar y:" + this.getAvatar().getPos().y, fg, bg); // DEV
+        display.drawText(1, 4, "camera x:" + this.attr._cameraX, fg, bg); // DEVdisplay.drawText(1, 5, "camera y:" + this.attr._cameraY, fg, bg); // DEV
+        display.drawText(1, 5, "camera y:" + this.attr._cameraY, fg, bg); // DEVdisplay.drawText(1, 5, "camera y:" + this.attr._cameraY, fg, bg); // DEV
+        display.drawText(1, 1, "HP: " + this.getAvatar().getCurHP() + "/" + this.getAvatar().getMaxHP());
+        display.drawText(1, 6, "Turns taken: " + this.getAvatar().getTurns());
     },
     moveAvatar: function(dx, dy) {
-        if (this.attr._avatar.tryWalk(this.attr._map, dx, dy)) {
+        if (this.getAvatar().tryWalk(this.getMap(), dx, dy)) {
             Game.refresh();
             this.checkMoveCamera();
         }
@@ -125,32 +125,32 @@ Game.UIMode.gamePlay = {
         var display = Game.getDisplay('main');
         var dispW2 = Math.round(display._options.width / 2);
         var dispH2 = Math.round(display._options.height / 2);
-        this.attr._cameraX = Math.min(Math.max(dispW2, sx), this.attr._mapWidth - dispW2);
-        this.attr._cameraY = Math.min(Math.max(dispH2, sy), this.attr._mapHeight - dispH2);
+        this.attr._cameraX = Math.min(Math.max(dispW2, sx), this.getMap().getWidth() - dispW2);
+        this.attr._cameraY = Math.min(Math.max(dispH2, sy), this.getMap().getHeight() - dispH2);
     },
     setCameraToAvatar: function() {
-        this.setCamera(this.attr._avatar.getPos().x, this.attr._avatar.getPos().y);
+        this.setCamera(this.getAvatar().getPos().x, this.getAvatar().getPos().y);
     },
     setWindowCamera: function(min, max) {
         var display = Game.getDisplay('main');
         var dispW = display._options.width;
         var dispH = display._options.height;
-        if (this.attr._avatar.getDispPos().x < Math.round(min * dispW)) {
+        if (this.getAvatar().getDispPos().x < Math.round(min * dispW)) {
             this.moveCamera(-1, 0);
         }
-        if (this.attr._avatar.getDispPos().x > Math.round(max * dispW)) {
+        if (this.getAvatar().getDispPos().x > Math.round(max * dispW)) {
             this.moveCamera(1, 0);
         }
-        if (this.attr._avatar.getDispPos().y < Math.round(min * dispH)) {
+        if (this.getAvatar().getDispPos().y < Math.round(min * dispH)) {
             this.moveCamera(0, -1);
         }
-        if (this.attr._avatar.getDispPos().y > Math.round(max * dispH)) {
+        if (this.getAvatar().getDispPos().y > Math.round(max * dispH)) {
             this.moveCamera(0, 1);
         }
     },
     setupNewGame: function() {
         this.setMap(new Game.Map('dungeon1'));
-        this.setAvatar(Game.EntityGenerator.create('manta ray'));
+        this.setAvatar(Game.EntityGenerator.create('avatar'));
 
         this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomTileWalkable());
         this.setCameraToAvatar();

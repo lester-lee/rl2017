@@ -36,7 +36,7 @@ Game.Map.prototype.getTile = function(pos) {
 };
 
 Game.Map.prototype.addEntity = function(ent, pos) {
-    this.attr._entitiesByLocation[pos] = ent.getID();
+    this.attr._entitiesByLocation[pos.x + ',' + pos.y] = ent.getID();
     this.attr._locationsByEntity[ent.getID()] = pos;
     ent.setMap(this);
     ent.setPos(pos);
@@ -48,12 +48,12 @@ Game.Map.prototype.updateEntityLocation = function(ent) {
         this.attr._locationsByEntity[ent.getID()] = undefined;
     }
     var pos = ent.getPos();
-    this.attr._entitiesByLocation[pos] = ent.getID();
+    this.attr._entitiesByLocation[pos.x + ',' + pos.y] = ent.getID();
     this.attr._locationsByEntity[ent.getID()] = pos;
 }
 
 Game.Map.prototype.getEntity = function(pos) {
-    var entID = this.attr._entitiesByLocation[pos];
+    var entID = this.attr._entitiesByLocation[pos.x + ',' + pos.y];
     if (entID) {
         return Game.DATASTORE.ENTITY[entID];
     }
@@ -98,9 +98,9 @@ Game.Map.prototype.renderOn = function(display, camX, camY) {
             }
             tile.draw(display, x, y);
             var ent = this.getEntity(pos);
-            if (ent) {
+            if (ent && ent.getName() != 'avatar') {
                 ent.draw(display, x, y)
-            };
+            }
         }
     }
 };
