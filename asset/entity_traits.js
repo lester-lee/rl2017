@@ -21,23 +21,23 @@ Game.EntityTraits.WalkerCorporeal = {
 };
 
 Game.EntityTraits.Chronicle = {
-  META: {
-    traitName: 'Chronicle',
-    traitGroup: 'Chronicle',
-    stateNamespace: '_Chronicle_attr',
-    stateModel: {
-      turnCounter: 0
+    META: {
+        traitName: 'Chronicle',
+        traitGroup: 'Chronicle',
+        stateNamespace: '_Chronicle_attr',
+        stateModel: {
+            turnCounter: 0
+        }
+    },
+    trackTurns: function() {
+        this.attr._Chronicle_attr.turnCounter++;
+    },
+    getTurns: function() {
+        return this.attr._Chronicle_attr.turnCounter;
+    },
+    setTurns: function(n) {
+        this.attr._Chronicle_attr.turnCounter = n;
     }
-  },
-  trackTurns: function() {
-    this.attr._Chronicle_attr.turnCounter++;
-  },
-  getTurns: function() {
-    return this.attr._Chronicle_attr.turnCounter;
-  },
-  setTurns: function(n) {
-    this.attr._Chronicle_attr.turnCounter = n;
-  }
 };
 
 Game.EntityTraits.StatHitPoints = {

@@ -153,7 +153,7 @@ Game.UIMode.gamePlay = {
         }
     },
     setupAvatar: function() {
-        var avatar = new Game.Entity(Game.EntityTemplates.Avatar);
+        var avatar = Game.EntityGenerator.create('avatar');
         var pos = this.attr._map.getWalkableTilePos();
         avatar.setPos(pos);
         this.attr._avatar = avatar;
