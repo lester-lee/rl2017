@@ -360,7 +360,6 @@ Game.UIMode.gamePersistence = {
         if (state_hash_name) {
             using_state_hash = state_hash_name;
         }
-        console.dir(this);
         for (var at in this[using_state_hash]) {
             if (this[using_state_hash][at] instanceof Object && 'fromJSON' in this[using_state_hash][at]) {
                 this[using_state_hash][at].fromJSON(json[at]);
