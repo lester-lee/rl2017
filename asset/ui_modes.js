@@ -154,22 +154,12 @@ Game.UIMode.gamePlay = {
 
         this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomTileWalkable());
         this.setCameraToAvatar();
-    },
-    /*
 
-        this.setupAvatar();
-        if (loadData !== undefined && loadData.hasOwnProperty(Game.UIMode.gamePlay.JSON_KEY)) {
-            this.fromJSON(loadData[Game.UIMode.gamePlay.JSON_KEY]);
+        // add mobs
+        for (var ecount = 0; ecount < 15; ecount++) {
+            this.getMap().addEntity(Game.EntityGenerator.create('manta ray'), this.getMap().getRandomTileWalkable());
         }
     },
-    setupAvatar: function() {
-        var avatar = Game.EntityGenerator.create('manta ray');
-        var pos = this.attr._map.getRandomTileWalkable();
-        avatar.setPos(pos);
-        this.attr._avatar = avatar;
-        this.setCameraToAvatar();
-    },
-    */
     handleInput: function(inputType, inputData) {
         // console.log("gamePlay input");
         var movementKeys = this.attr._numpadKeys;
