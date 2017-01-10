@@ -71,5 +71,5 @@ Game.Entity.prototype.toJSON = function(){
 };
 
 Game.Entity.prototype.fromJSON = function(json){
-  Game.UIMode.gamePersistence.fromJSON.call(json, this);
+  Game.UIMode.gamePersistence.BASE_fromJSON.call(this, json);
 };

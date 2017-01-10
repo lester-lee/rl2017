@@ -226,7 +226,7 @@ Game.UIMode.gamePlay = {
         return Game.UIMode.gamePersistence.BASE_toJSON.call(this);
     },
     fromJSON: function(json) {
-        return Game.UIMode.gamePersistence.BASE_fromJSON.call(json, this);
+        return Game.UIMode.gamePersistence.BASE_fromJSON.call(this, json);
     }
 };
 
@@ -362,7 +362,6 @@ Game.UIMode.gamePersistence = {
         }
         console.dir(this);
         for (var at in this[using_state_hash]) {
-          console.dir(this[using_state_hash][at]);
             if (this[using_state_hash][at] instanceof Object && 'fromJSON' in this[using_state_hash][at]) {
                 this[using_state_hash][at].fromJSON(json[at]);
             } else {
