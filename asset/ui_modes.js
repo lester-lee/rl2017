@@ -29,12 +29,10 @@ Game.UIMode.gameStart = {
 
 Game.UIMode.gamePlay = {
     attr: {
-        _map: null,
-        _avatar: null,
+        _mapID: '',
+        _avatarID: '',
         _cameraX: 50,
         _cameraY: 50,
-        _mapWidth: 100,
-        _mapHeight: 100,
         _wasd: 1,
         _wasdKeys: {
             1: ROT.VK_Z,
@@ -63,26 +61,41 @@ Game.UIMode.gamePlay = {
     enter: function() {
         // console.log("gamePlay enter");
         Game.Message.send('a pair of star-crossed lovers take their life');
+        if (this.attr._avatarID) {
+            this.setCameraToAvatar();
+        }
         Game.refresh();
     },
     exit: function() {
         // console.log("gamePlay exit");
         Game.refresh();
     },
+    getMap: function() {
+        return Game.DATASTORE.MAP[this.attr._mapID];
+    },
+    setMap: function(m) {
+        this.attr._mapID = m.getID();
+    },
+    getAvatar: function() {
+        return Game.DATASTORE.ENTITY[this.attr._avatarID];
+    },
+    setAvatar: function(a) {
+        this.attr._avatarID = a.getID();
+    },
     render: function(display) {
         // console.log("gamePlay render");
-        display.drawText(1, 1, "the following two sentences are false", fg, bg);
-        display.drawText(1, 3, "press [W] to win", fg, bg);
-        display.drawText(1, 4, "press [L] to lose", fg, bg);
-        display.drawText(1, 5, "press [=] to save/load/new", fg, bg);
+        // display.drawText(1, 1, "the following two sentences are false", fg, bg);
+        // display.drawText(1, 3, "press [W] to win", fg, bg);
+        // display.drawText(1, 4, "press [L] to lose", fg, bg);
+        // display.drawText(1, 5, "press [=] to save/load/new", fg, bg);
         this.attr._map.renderOn(display, this.attr._cameraX, this.attr._cameraY);
-        this.renderAvatar(display);
+        // this.renderAvatar(display);
     },
     renderAvatar: function(display) {
         var avX = this.attr._avatar.getPos().x - this.attr._cameraX + Math.round(display._options.width / 2);
         var avY = this.attr._avatar.getPos().y - this.attr._cameraY + Math.round(display._options.height / 2);
         this.attr._avatar.setDispPos(new Game.Coordinate(avX, avY));
-        Game.Symbol.AVATAR.draw(display, avX, avY);
+        Game.DATASTORE.ENTITY[this.attr._avatarID].draw(display, avX, avY);
     },
     renderAvatarInfo: function(display) {
         //     display.drawText(1, 2, "avatar x:" + this.attr._avatar.getX(), fg, bg); // DEV
@@ -135,30 +148,28 @@ Game.UIMode.gamePlay = {
             this.moveCamera(0, 1);
         }
     },
-    setupPlay: function(loadData) {
-        var mapTiles = Game.Util.init2DArray(this.attr._mapWidth, this.attr._mapHeight, Game.Tile.nullTile);
-        var generator = new ROT.Map.Rogue(this.attr._mapWidth, this.attr._mapHeight);
+    setupNewGame: function() {
+        this.setMap(new Game.Map('dungeon1'));
+        this.setAvatar(Game.EntityGenerator.create('manta ray'));
 
-        generator.create(function(x, y, v) {
-            if (v === 0) {
-                mapTiles[x][y] = Game.Tile.floorTile;
-            } else {
-                mapTiles[x][y] = Game.Tile.wallTile;
-            }
-        });
-        this.attr._map = new Game.Map(mapTiles);
+        this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomTileWalkable());
+        this.setCameraToAvatar();
+    },
+    /*
+
         this.setupAvatar();
         if (loadData !== undefined && loadData.hasOwnProperty(Game.UIMode.gamePlay.JSON_KEY)) {
             this.fromJSON(loadData[Game.UIMode.gamePlay.JSON_KEY]);
         }
     },
     setupAvatar: function() {
-        var avatar = Game.EntityGenerator.create('avatar');
-        var pos = this.attr._map.getWalkableTilePos();
+        var avatar = Game.EntityGenerator.create('manta ray');
+        var pos = this.attr._map.getRandomTileWalkable();
         avatar.setPos(pos);
         this.attr._avatar = avatar;
         this.setCameraToAvatar();
     },
+    */
     handleInput: function(inputType, inputData) {
         // console.log("gamePlay input");
         var movementKeys = this.attr._numpadKeys;
@@ -182,7 +193,7 @@ Game.UIMode.gamePlay = {
                     this.moveAvatar(-1, 0);
                     break;
                 case movementKeys[5]:
-                    this.moveAvatar(0,0);
+                    this.moveAvatar(0, 0);
                     break;
                 case movementKeys[6]:
                     this.moveAvatar(1, 0);
@@ -278,6 +289,7 @@ Game.UIMode.gameLose = {
 };
 
 Game.UIMode.gamePersistence = {
+    RANDOM_SEED_KEY: 'gameRandomSeed',
     enter: function() {
         // console.log("gamePersistence enter");
         Game.Message.send('save, restore, or start a new game');
@@ -310,22 +322,46 @@ Game.UIMode.gamePersistence = {
     },
     saveGame: function() {
         if (this.localStorageAvailable()) {
-            window.localStorage.setItem(Game.PERSISTENCE_NAMESPACE, JSON.stringify(Game));
+            Game.DATASTORE.GAME_PLAY = Game.UIMode.gamePlay.attr;
+            window.localStorage.setItem(Game.PERSISTENCE_NAMESPACE, JSON.stringify(Game.DATASTORE));
+            Game.switchUIMode(Game.UIMode.gamePlay);
+        } else {
+            Game.Message.send("Your browser does not support save files.");
             Game.switchUIMode(Game.UIMode.gamePlay);
         }
-        Game.switchUIMode(Game.UIMode.gamePlay);
     },
     loadGame: function() {
         var json_state_data = window.localStorage.getItem(Game.PERSISTENCE_NAMESPACE);
         var state_data = JSON.parse(json_state_data);
-        // console.dir(state_data);
-        Game.setRandomSeed(state_data._randomSeed);
-        Game.UIMode.gamePlay.setupPlay(state_data);
+
+        Game.setRandomSeed(state_data[this.RANDOM_SEED_KEY]);
+
+        // load maps
+        for (var mapID in state_data.MAP) {
+            if (state_data.MAP.hasOwnProperty(mapID)) {
+                var mapAttr = JSON.parse(state_Data.MAP[mapID]);
+                Game.DATASTORE.MAP[mapID] = new Game.Map(mapAttr._mapTileSetName);
+                Game.DATASTORE.MAP[mapID].fromJSON(state_data.MAP[mapID]);
+            }
+        }
+
+        // load entities
+        for (var entID in state_data.ENTITY) {
+            if (state_data.ENTITY.hasOwnProperty(ent)) {
+                var entAttr = JSON.parse(state_data.ENTITY[entID]);
+                Game.DATASTORE.ENTITY[entID] = Game.EntityGenerator.create(entAttr.generator_key);
+                Game.DATASTORE.ENTITY[entID].fromJSON(state_data.ENTITY[entID]);
+            }
+        }
+
+        // load gamePlay
+        Game.UIMode.gamePlay.attr = state_data.GAME_PLAY;
+
         Game.switchUIMode(Game.UIMode.gamePlay);
     },
     newGame: function() {
         Game.setRandomSeed(5 + Math.floor(ROT.RNG.getUniform() * 100000));
-        Game.UIMode.gamePlay.setupPlay();
+        Game.UIMode.gamePlay.setupNewGame();
         Game.switchUIMode(Game.UIMode.gamePlay);
     },
     localStorageAvailable: function() { // NOTE: see https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
@@ -344,29 +380,14 @@ Game.UIMode.gamePersistence = {
         if (state_hash_name) {
             state = this[state_hash_name];
         }
-        var json = {};
-        for (var at in state) {
-            if (state.hasOwnProperty(at)) {
-                if (state[at] instanceof Object && 'toJSON' in state[at]) {
-                    json[at] = state[at].toJSON();
-                } else {
-                    json[at] = state[at];
-                }
-            }
-        }
-        return json;
+        var json = JSON.stringify(state);
+
     },
     BASE_fromJSON: function(json, state_hash_name) {
         var using_state_hash = 'attr';
         if (state_hash_name) {
             using_state_hash = state_hash_name;
         }
-        for (var at in this[using_state_hash]) {
-            if (this[using_state_hash][at] instanceof Object && 'fromJSON' in this[using_state_hash][at]) {
-                this[using_state_hash][at].fromJSON(json[at]);
-            } else {
-                this[using_state_hash][at] = json[at];
-            }
-        }
+        this[using_state_hash] = JSON.parse(json);
     }
 };

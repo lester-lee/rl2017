@@ -59,6 +59,8 @@ var Game = {
 
     _curUIMode: null,
 
+    DATASTORE: {},
+
     init: function() {
         console.log("game init");
         // set up displays
@@ -80,6 +82,7 @@ var Game = {
     setRandomSeed: function(s) {
         this._randomSeed = s;
         console.log("using random seed " + this._randomSeed);
+        this.DATASTORE[Game.UIMode.gamePersistence.RANDOM_SEED_KEY] = this._randomSeed;
         ROT.RNG.setSeed(this._randomSeed);
     },
 

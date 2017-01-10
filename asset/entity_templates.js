@@ -1,5 +1,3 @@
-Game.ALL_ENTITIES = {};
-
 Game.EntityGenerator = new Game.Generator('entities',Game.Entity);
 
 Game.EntityGenerator.learn({
