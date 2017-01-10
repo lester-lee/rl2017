@@ -90,6 +90,7 @@ Game.UIMode.gamePlay = {
         //     display.drawText(1, 4, "camera x:" + this.attr._cameraX, fg, bg); // DEV
         //     display.drawText(1, 5, "camera y:" + this.attr._cameraY, fg, bg); // DEV
         display.drawText(1, 1, "HP: " + this.attr._avatar.getCurHP() + "/" + this.attr._avatar.getMaxHP());
+        display.drawText(1, 3, "Turns taken: " + this.attr._avatar.getTurns());
     },
     moveAvatar: function(dx, dy) {
         if (this.attr._avatar.tryWalk(this.attr._map, dx, dy)) {
@@ -181,7 +182,7 @@ Game.UIMode.gamePlay = {
                     this.moveAvatar(-1, 0);
                     break;
                 case movementKeys[5]:
-                    // stand still
+                    this.moveAvatar(0,0);
                     break;
                 case movementKeys[6]:
                     this.moveAvatar(1, 0);

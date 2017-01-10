@@ -7,5 +7,5 @@ Game.EntityTemplates.Avatar = {
     chr: '@',
     fg: '#f00',
     maxHP: 10,
-    traits: [Game.EntityTraits.WalkerCorporeal, Game.EntityTraits.StatHitPoints]
+    traits: [Game.EntityTraits.WalkerCorporeal, Game.EntityTraits.Chronicle, Game.EntityTraits.StatHitPoints]
 };
