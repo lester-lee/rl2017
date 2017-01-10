@@ -329,15 +329,15 @@ Game.UIMode.gamePersistence = {
         // load maps
         for (var mapID in state_data.MAP) {
             if (state_data.MAP.hasOwnProperty(mapID)) {
-                var mapAttr = JSON.parse(state_Data.MAP[mapID]);
-                Game.DATASTORE.MAP[mapID] = new Game.Map(mapAttr._mapTileSetName);
+                var mapAttr = JSON.parse(state_data.MAP[mapID]);
+                Game.DATASTORE.MAP[mapID] = new Game.Map(mapAttr._mapKey);
                 Game.DATASTORE.MAP[mapID].fromJSON(state_data.MAP[mapID]);
             }
         }
 
         // load entities
         for (var entID in state_data.ENTITY) {
-            if (state_data.ENTITY.hasOwnProperty(ent)) {
+            if (state_data.ENTITY.hasOwnProperty(entID)) {
                 var entAttr = JSON.parse(state_data.ENTITY[entID]);
                 Game.DATASTORE.ENTITY[entID] = Game.EntityGenerator.create(entAttr.generator_key);
                 Game.DATASTORE.ENTITY[entID].fromJSON(state_data.ENTITY[entID]);
@@ -370,8 +370,7 @@ Game.UIMode.gamePersistence = {
         if (state_hash_name) {
             state = this[state_hash_name];
         }
-        var json = JSON.stringify(state);
-
+        return JSON.stringify(state);
     },
     BASE_fromJSON: function(json, state_hash_name) {
         var using_state_hash = 'attr';

@@ -82,10 +82,9 @@ Game.Entity.prototype.getDispPos = function() {
 };
 
 Game.Entity.prototype.toJSON = function() {
-    var json = Game.UIMode.gamePersistence.BASE_toJSON.call(this);
-    return json;
+    return Game.UIMode.gamePersistence.BASE_toJSON.call(this);
 };
 
 Game.Entity.prototype.fromJSON = function(json) {
-    Game.UIMode.gamePersistence.BASE_fromJSON.call(this, json);
+    return Game.UIMode.gamePersistence.BASE_fromJSON.call(this, json);
 };

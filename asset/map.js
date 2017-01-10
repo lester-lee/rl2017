@@ -104,6 +104,11 @@ Game.Map.prototype.renderOn = function(display, camX, camY) {
         }
     }
 };
-Game.Map.prototype.toJSON = function() {};
+Game.Map.prototype.toJSON = function() {
+    var json = Game.UIMode.gamePersistence.BASE_toJSON.call(this);
+    return json;
+};
 
-Game.Map.prototype.fromJSON = function(json) {};
+Game.Map.prototype.fromJSON = function(json) {
+    return Game.UIMode.gamePersistence.BASE_fromJSON.call(this, json);
+};
