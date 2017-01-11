@@ -12,6 +12,7 @@ Game.EntityTraits.WalkerCorporeal = {
         var nextTile = map.getTile(newPos);
         if (nextTile.isWalkable()) {
             this.setPos(newPos);
+            map.updateEntityLocation(this);
             this.trackTurns();
             Game.refresh();
             return true;
