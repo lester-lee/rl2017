@@ -1,7 +1,7 @@
 Game.MapTileSets = {
     'dungeon1': {
-        _width: 30,
-        _height: 30,
+        _width: 100,
+        _height: 100,
         getMapTiles: function() {
             var mapTiles = Game.Util.init2DArray(this._width, this._height, Game.Tile.nullTile);
             var generator = new ROT.Map.Rogue(this._width, this._height);

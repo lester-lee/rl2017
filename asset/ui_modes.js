@@ -246,14 +246,17 @@ Game.UIMode.gamePersistence = {
     handleInput: function(inputType, inputData) {
         var action = Game.KeyBinding.getInput(inputType, inputData).key;
         switch (action) {
-            case ('PERSISTENCE_SAVE'):
+            case 'PERSISTENCE_SAVE':
                 this.saveGame();
                 break;
-            case ('PERSISTENCE_LOAD'):
+            case 'PERSISTENCE_LOAD':
                 this.loadGame();
                 break;
-            case ('PERSISTENCE_NEW'):
+            case 'PERSISTENCE_NEW':
                 this.newGame();
+                break;
+            case 'CANCEL':
+                Game.switchUIMode(Game.UIMode.gamePlay);
                 break;
             default:
                 break;
