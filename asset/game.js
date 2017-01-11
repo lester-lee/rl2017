@@ -61,6 +61,15 @@ var Game = {
 
     DATASTORE: {},
 
+    clearDatastore: function(){
+      this.DATASTORE = {
+        ENTITY: {},
+        GAME_PLAY: {},
+        MAP: {},
+        gameRandomSeed: 0
+      }
+    },
+
     init: function() {
         console.log("game init");
         // set up displays

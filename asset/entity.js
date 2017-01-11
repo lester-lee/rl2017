@@ -10,9 +10,10 @@ Game.Entity = function(template) {
     this.attr._position = new Game.Coordinate(0, 0);
     this.attr._dispPos = new Game.Coordinate(0, 0);
     this.attr._mapID = null;
+    this.attr._generator_key = template._generator_key || '';
 
-    this._ID = Game.Util.randomString(16);
-    Game.DATASTORE.ENTITY[this._ID] = this;
+    this.attr._ID = Game.Util.randomString(16);
+    Game.DATASTORE.ENTITY[this.attr._ID] = this;
 
     // mixins/traits
     this._traitTracker = {};
@@ -52,7 +53,7 @@ Game.Entity.prototype.hasTrait = function(check) {
 }
 
 Game.Entity.prototype.getID = function() {
-    return this._ID;
+    return this.attr._ID;
 }
 
 Game.Entity.prototype.getMap = function() {

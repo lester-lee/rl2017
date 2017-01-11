@@ -8,7 +8,7 @@ Game.Map = function(mapKey) {
         _width: this._tiles.length,
         _height: this._tiles[0].length,
         _entitiesByLocation: {},
-        _locationsByEntity: {}
+        _locationsByEntity: {},
     };
     Game.DATASTORE.MAP[this.attr._id] = this;
 };
@@ -110,5 +110,5 @@ Game.Map.prototype.toJSON = function() {
 };
 
 Game.Map.prototype.fromJSON = function(json) {
-    return Game.UIMode.gamePersistence.BASE_fromJSON.call(this, json);
+    Game.UIMode.gamePersistence.BASE_fromJSON.call(this, json);
 };

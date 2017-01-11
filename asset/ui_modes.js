@@ -339,7 +339,7 @@ Game.UIMode.gamePersistence = {
         for (var entID in state_data.ENTITY) {
             if (state_data.ENTITY.hasOwnProperty(entID)) {
                 var entAttr = JSON.parse(state_data.ENTITY[entID]);
-                Game.DATASTORE.ENTITY[entID] = Game.EntityGenerator.create(entAttr.generator_key);
+                Game.DATASTORE.ENTITY[entID] = Game.EntityGenerator.create(entAttr._generator_key);
                 Game.DATASTORE.ENTITY[entID].fromJSON(state_data.ENTITY[entID]);
             }
         }
@@ -350,6 +350,7 @@ Game.UIMode.gamePersistence = {
         Game.switchUIMode(Game.UIMode.gamePlay);
     },
     newGame: function() {
+        Game.clearDatastore();
         Game.setRandomSeed(5 + Math.floor(ROT.RNG.getUniform() * 100000));
         Game.UIMode.gamePlay.setupNewGame();
         Game.switchUIMode(Game.UIMode.gamePlay);

@@ -17,6 +17,6 @@ Game.Generator.prototype.learn = function(template, key){
 Game.Generator.prototype.create = function(key){
   var template = this._templates[key];
   if (!template) { template = '_DEFAULT'; }
-  template.generator_key = key;
+  template._generator_key = key;
   return new this._constructfn(template);
 };
