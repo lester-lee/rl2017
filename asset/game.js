@@ -82,6 +82,7 @@ var Game = {
             });
         }
         this.renderAll();
+        Game.KeyBinding.setKeyBinding('waxd');
     },
 
     refresh: function() {

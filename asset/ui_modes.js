@@ -33,29 +33,6 @@ Game.UIMode.gamePlay = {
         _avatarID: '',
         _cameraX: 50,
         _cameraY: 50,
-        _wasd: 1,
-        _wasdKeys: {
-            1: ROT.VK_Z,
-            2: ROT.VK_X,
-            3: ROT.VK_C,
-            4: ROT.VK_A,
-            5: ROT.VK_S,
-            6: ROT.VK_D,
-            7: ROT.VK_Q,
-            8: ROT.VK_W,
-            9: ROT.VK_E
-        },
-        _numpadKeys: {
-            1: ROT.VK_NUMPAD1,
-            2: ROT.VK_NUMPAD2,
-            3: ROT.VK_NUMPAD3,
-            4: ROT.VK_NUMPAD4,
-            5: ROT.VK_NUMPAD5,
-            6: ROT.VK_NUMPAD6,
-            7: ROT.VK_NUMPAD7,
-            8: ROT.VK_NUMPAD8,
-            9: ROT.VK_NUMPAD9
-        }
     },
     JSON_KEY: 'uiMode_gamePlay',
     enter: function() {
@@ -161,42 +138,45 @@ Game.UIMode.gamePlay = {
         }
     },
     handleInput: function(inputType, inputData) {
-        // console.log("gamePlay input");
-        var movementKeys = this.attr._numpadKeys;
-        if (this.attr._wasd === 1) {
-            movementKeys = this.attr._wasdKeys;
+        var action = Game.KeyBinding.getInput(inputType, inputData).key;
+        switch (action) {
+            // Movement commands
+            case 'MOVE_UL':
+                this.moveAvatar(-1, 1);
+                break;
+            case 'MOVE_UP':
+                this.moveAvatar(0, 1);
+                break;
+            case 'MOVE_UR':
+                this.moveAvatar(1, 1);
+                break;
+            case 'MOVE_LEFT':
+                this.moveAvatar(-1, 0);
+                break;
+            case 'MOVE_STILL':
+                this.moveAvatar(0, 0);
+                break;
+            case 'MOVE_RIGHT':
+                this.moveAvatar(1, 0);
+                break;
+            case 'MOVE_DL':
+                this.moveAvatar(-1, -1);
+                break;
+            case 'MOVE_DOWN':
+                this.moveAvatar(0, -1);
+                break;
+            case 'MOVE_DR':
+                this.moveAvatar(1, -1);
+                break;
+            default:
+                break;
         }
+
         // console.log(inputData.keyCode);
         if (inputType == 'keydown') {
             switch (inputData.keyCode) {
                 // Movement commands
-                case movementKeys[1]:
-                    this.moveAvatar(-1, 1);
-                    break;
-                case movementKeys[2]:
-                    this.moveAvatar(0, 1);
-                    break;
-                case movementKeys[3]:
-                    this.moveAvatar(1, 1);
-                    break;
-                case movementKeys[4]:
-                    this.moveAvatar(-1, 0);
-                    break;
-                case movementKeys[5]:
-                    this.moveAvatar(0, 0);
-                    break;
-                case movementKeys[6]:
-                    this.moveAvatar(1, 0);
-                    break;
-                case movementKeys[7]:
-                    this.moveAvatar(-1, -1);
-                    break;
-                case movementKeys[8]:
-                    this.moveAvatar(0, -1);
-                    break;
-                case movementKeys[9]:
-                    this.moveAvatar(1, -1);
-                    break;
+
                 case ROT.VK_BACK_SLASH:
                     // change movement input keys
                     this.attr._wasd = (this.attr._wasd === 0) ? 1 : 0;
@@ -293,21 +273,19 @@ Game.UIMode.gamePersistence = {
         display.drawText(1, 2, "S to save, L to load, N for new game", fg, bg);
     },
     handleInput: function(inputType, inputData) {
-        // console.log("gamePersistence input");
-        if (inputType == 'keypress' && inputData.shiftKey) {
-            switch (inputData.keyCode) {
-                case (ROT.VK_S):
-                    this.saveGame();
-                    break;
-                case (ROT.VK_L):
-                    this.loadGame();
-                    break;
-                case (ROT.VK_N):
-                    this.newGame();
-                    break;
-                default:
-                    break;
-            }
+        var action = Game.KeyBinding.getInput(inputType, inputData).key;
+        switch (action) {
+            case ('PERSISTENCE_SAVE'):
+                this.saveGame();
+                break;
+            case ('PERSISTENCE_LOAD'):
+                this.loadGame();
+                break;
+            case ('PERSISTENCE_NEW'):
+                this.newGame();
+                break;
+            default:
+                break;
         }
     },
     saveGame: function() {
