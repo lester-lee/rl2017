@@ -142,13 +142,13 @@ Game.UIMode.gamePlay = {
         switch (action) {
             // Movement commands
             case 'MOVE_UL':
-                this.moveAvatar(-1, 1);
+                this.moveAvatar(-1, -1);
                 break;
             case 'MOVE_UP':
-                this.moveAvatar(0, 1);
+                this.moveAvatar(0, -1);
                 break;
             case 'MOVE_UR':
-                this.moveAvatar(1, 1);
+                this.moveAvatar(1, -1);
                 break;
             case 'MOVE_LEFT':
                 this.moveAvatar(-1, 0);
@@ -160,48 +160,19 @@ Game.UIMode.gamePlay = {
                 this.moveAvatar(1, 0);
                 break;
             case 'MOVE_DL':
-                this.moveAvatar(-1, -1);
+                this.moveAvatar(-1, 1);
                 break;
             case 'MOVE_DOWN':
-                this.moveAvatar(0, -1);
+                this.moveAvatar(0, 1);
                 break;
             case 'MOVE_DR':
-                this.moveAvatar(1, -1);
+                this.moveAvatar(1, 1);
+                break;
+            case 'PERSISTENCE':
+                Game.switchUIMode(Game.UIMode.gamePersistence);
                 break;
             default:
                 break;
-        }
-
-        // console.log(inputData.keyCode);
-        if (inputType == 'keydown') {
-            switch (inputData.keyCode) {
-                // Movement commands
-
-                case ROT.VK_BACK_SLASH:
-                    // change movement input keys
-                    this.attr._wasd = (this.attr._wasd === 0) ? 1 : 0;
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            switch (inputData.keyCode) {
-                case ROT.VK_L:
-                    if (inputData.shiftKey) {
-                        Game.switchUIMode(Game.UIMode.gameLose);
-                    }
-                    break;
-                case ROT.VK_W:
-                    if (inputData.shiftKey) {
-                        Game.switchUIMode(Game.UIMode.gameWin);
-                    }
-                    break;
-                case ROT.VK_EQUALS:
-                    Game.switchUIMode(Game.UIMode.gamePersistence);
-                    break;
-                default:
-                    break;
-            }
         }
     },
     toJSON: function() {

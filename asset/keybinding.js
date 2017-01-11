@@ -100,130 +100,147 @@ Game.KeyBinding = {
         },
 
         MOVE_UL: {
-          waxd: {
-            inputMatch: ROT.VK_Q,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          },
-          numpad: {
-            inputMatch: ROT.VK_NUMPAD7,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          }
+            waxd: {
+                inputMatch: ROT.VK_Q,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            },
+            numpad: {
+                inputMatch: ROT.VK_NUMPAD7,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            }
         },
         MOVE_UP: {
-          waxd: {
-            inputMatch: ROT.VK_W,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          },
-          numpad: {
-            inputMatch: ROT.VK_NUMPAD8,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          }
+            waxd: {
+                inputMatch: ROT.VK_W,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            },
+            numpad: {
+                inputMatch: ROT.VK_NUMPAD8,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            }
         },
         MOVE_UR: {
-          waxd: {
-            inputMatch: ROT.VK_E,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          },
-          numpad: {
-            inputMatch: ROT.VK_NUMPAD9,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          }
+            waxd: {
+                inputMatch: ROT.VK_E,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            },
+            numpad: {
+                inputMatch: ROT.VK_NUMPAD9,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            }
         },
         MOVE_LEFT: {
-          waxd: {
-            inputMatch: ROT.VK_A,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          },
-          numpad: {
-            inputMatch: ROT.VK_NUMPAD4,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          }
+            waxd: {
+                inputMatch: ROT.VK_A,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            },
+            numpad: {
+                inputMatch: ROT.VK_NUMPAD4,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            }
         },
         MOVE_STILL: {
-          waxd: {
-            inputMatch: ROT.VK_S,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          },
-          numpad: {
-            inputMatch: ROT.VK_NUMPAD5,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          }
+            waxd: {
+                inputMatch: ROT.VK_S,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            },
+            numpad: {
+                inputMatch: ROT.VK_NUMPAD5,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            }
         },
         MOVE_RIGHT: {
-          waxd: {
-            inputMatch: ROT.VK_D,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          },
-          numpad: {
-            inputMatch: ROT.VK_NUMPAD6,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          }
+            waxd: {
+                inputMatch: ROT.VK_D,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            },
+            numpad: {
+                inputMatch: ROT.VK_NUMPAD6,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            }
         },
         MOVE_DL: {
-          waxd: {
-            inputMatch: ROT.VK_Z,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          },
-          numpad: {
-            inputMatch: ROT.VK_NUMPAD1,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          }
+            waxd: {
+                inputMatch: ROT.VK_Z,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            },
+            numpad: {
+                inputMatch: ROT.VK_NUMPAD1,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            }
         },
         MOVE_DOWN: {
-          waxd: {
-            inputMatch: ROT.VK_X,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          },
-          numpad: {
-            inputMatch: ROT.VK_NUMPAD2,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          }
+            waxd: {
+                inputMatch: ROT.VK_X,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            },
+            numpad: {
+                inputMatch: ROT.VK_NUMPAD2,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            }
         },
         MOVE_DR: {
-          waxd: {
-            inputMatch: ROT.VK_C,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          },
-          numpad: {
-            inputMatch: ROT.VK_NUMPAD3,
-            inputType: 'keydown',
-            inputShift: false,
-            inputCtrl: false
-          }
+            waxd: {
+                inputMatch: ROT.VK_C,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            },
+            numpad: {
+                inputMatch: ROT.VK_NUMPAD3,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            }
+        },
+
+        CHANGE_BINDINGS: {
+            all: {
+                inputMatch: ROT.VK_BACK_SLASH,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            }
+        },
+        CANCEL: {
+            all: {
+                inputMatch: ROT.VK_ESCAPE,
+                inputType: 'keydown',
+                inputShift: false,
+                inputCtrl: false
+            }
         }
 
     }
