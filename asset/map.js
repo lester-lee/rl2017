@@ -36,11 +36,11 @@ Game.Map.prototype.setNextMap = function(id){
 };
 
 Game.Map.prototype.getPrevMap = function(){
-    return this.attr._prevMapID;
+    return Game.DATASTORE.MAP[this.attr._prevMapID];
 };
 
 Game.Map.prototype.getNextMap = function(){
-    return this.attr._nextMapID;
+    return Game.DATASTORE.MAP[this.attr._nextMapID];
 };
 
 Game.Map.prototype.getTile = function(pos) {

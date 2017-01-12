@@ -140,7 +140,7 @@ Game.UIMode.gamePlay = {
     },
     nextLevel: function() {
         var oldMap = this.getMap();
-        var nextMap = new Game.Map('cave');
+        var nextMap = oldMap.getNextMap() || new Game.Map('cave');
         oldMap.setNextMap(nextMap.getID());
         nextMap.setPrevMap(oldMap.getID());
 
@@ -154,7 +154,7 @@ Game.UIMode.gamePlay = {
     },
     prevLevel: function(){
         var prevMap = this.getMap().getPrevMap();
-        this.attr._mapID = prevMap;
+        this.setMap(prevMap);
         var tile = this.getMap().getRandomTileWalkable();
         this.getAvatar().setPos(tile);
         this.setCameraToAvatar();
