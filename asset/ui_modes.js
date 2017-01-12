@@ -83,6 +83,7 @@ Game.UIMode.gamePlay = {
         display.drawText(1, 6, "Turns taken: " + this.getAvatar().getTurns());
     },
     moveAvatar: function(dx, dy) {
+        Game.Message.ageMessages();
         if (this.getAvatar().tryWalk(this.getMap(), dx, dy)) {
             Game.refresh();
             this.checkMoveCamera();

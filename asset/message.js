@@ -3,12 +3,11 @@ Game.Message = {
         freshMessages: [],
         staleMessages: [],
         archivedMessages: [],
-        archiveMessageLimit: 200
+        archivedMessageLimit: 200
     },
-    _curMessage: '',
     render: function(display) {
         display.clear();
-        var dispRowMax = display._options.height - 1;
+        var dispRowMax = display._options.height;
         var dispRow = 0;
         var freshIdx = 0;
         var staleIdx = 0;
@@ -19,7 +18,25 @@ Game.Message = {
             dispRow += display.drawText(1, dispRow, this.attr.freshMessages[freshIdx], '#fff', '#000');
         }
         for (staleIdx = 0; staleIdx < sLen && dispRow < dispRowMax; staleIdx++) {
-            dispRow += display.drawText(1, dispRow, this.attr.staleMessages[staleIdx], '#aaa', '#000');
+            dispRow += display.drawText(1, dispRow, this.attr.staleMessages[staleIdx], '#aa0', '#000');
+        }
+    },
+    ageMessages: function() {
+        // archive oldest stale message
+        if (this.attr.staleMessages[0] != null) {
+            this.attr.archivedMessages.unshift(this.attr.staleMessages.pop());
+        }
+
+        // dump messages over limit
+        var aLen = this.attr.archivedMessages.length;
+        while (aLen > this.attr.archivedMessageLimit) {
+            this.attr.archivedMessages.pop();
+            aLen--;
+        }
+
+        // move fresh messages to stale
+        while (this.attr.freshMessages[0] != null) {
+            this.attr.staleMessages.unshift(this.attr.freshMessages.shift());
         }
     },
     send: function(msg) {
