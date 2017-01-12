@@ -225,6 +225,22 @@ Game.KeyBinding = {
                 inputCtrl: false
             }
         },
+        NEXT_LEVEL: {
+          all: {
+            inputMatch: ROT.VK_GREATER_THAN,
+            inputType: 'keypress',
+            inputShift: true,
+            inputCtrl: false
+          }
+        },
+        PREVIOUS_LEVEL: {
+          all: {
+            inputMatch: ROT.VK_LESS_THAN,
+            inputType: 'keypress',
+            inputShift: true,
+            inputCtrl: false
+          }
+        },
 
         CHANGE_BINDINGS: {
             all: {

@@ -32,7 +32,7 @@ Game.UIMode.gamePlay = {
         _mapID: '',
         _avatarID: '',
         _cameraX: 50,
-        _cameraY: 50,
+        _cameraY: 50
     },
     JSON_KEY: 'uiMode_gamePlay',
     enter: function() {
@@ -127,7 +127,7 @@ Game.UIMode.gamePlay = {
         }
     },
     setupNewGame: function() {
-        this.setMap(new Game.Map('dungeon1'));
+        this.setMap(new Game.Map('dungeon'));
         this.setAvatar(Game.EntityGenerator.create('avatar'));
 
         this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomTileWalkable());
@@ -137,6 +137,19 @@ Game.UIMode.gamePlay = {
         for (var ecount = 0; ecount < 15; ecount++) {
             this.getMap().addEntity(Game.EntityGenerator.create('manta ray'), this.getMap().getRandomTileWalkable());
         }
+    },
+    nextLevel: function() {
+        var oldMap = this.getMap();
+        var nextMap = new Game.Map('cave');
+        oldMap.setNextMap(nextMap.getID());
+        nextMap.setPrevMap(oldMap.getID());
+
+        // update current map to NextMap
+        this.setMap(nextMap);
+        nextMap.addEntity(this.getAvatar(), nextMap.getRandomTileWalkable());
+        this.setCameraToAvatar();
+
+        Game.refresh();
     },
     handleInput: function(inputType, inputData) {
         var action = Game.KeyBinding.getInput(inputType, inputData).key;
@@ -171,6 +184,14 @@ Game.UIMode.gamePlay = {
                 break;
             case 'PERSISTENCE':
                 Game.switchUIMode(Game.UIMode.gamePersistence);
+                break;
+            case 'NEXT_LEVEL':
+                console.log('next level');
+                this.nextLevel();
+                break;
+            case 'PREVIOUS_LEVEL':
+                console.log('prev level');
+                this.prevLevel();
                 break;
             default:
                 break;

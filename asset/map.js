@@ -9,6 +9,8 @@ Game.Map = function(mapKey) {
         _height: this._tiles[0].length,
         _entitiesByLocation: {},
         _locationsByEntity: {},
+        _prevMapID: '',
+        _nextMapID: ''
     };
     Game.DATASTORE.MAP[this.attr._id] = this;
 };
@@ -23,6 +25,22 @@ Game.Map.prototype.getWidth = function() {
 
 Game.Map.prototype.getHeight = function() {
     return this.attr._height;
+};
+
+Game.Map.prototype.setPrevMap = function(id){
+    this.attr._prevMapID = id;
+};
+
+Game.Map.prototype.setNextMap = function(id){
+    this.attr._nextMapID = id;
+};
+
+Game.Map.prototype.getPrevMap = function(){
+    return this.attr._prevMapID;
+};
+
+Game.Map.prototype.getNextMap = function(){
+    return this.attr._nextMapID;
 };
 
 Game.Map.prototype.getTile = function(pos) {
