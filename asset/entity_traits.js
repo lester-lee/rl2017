@@ -9,8 +9,9 @@ Game.EntityTraits.PlayerMessager = {
                 Game.Message.send("it'd be mighty impolite to walk into " + evtData.target.getName());
                 Game.renderMessage();
             },
-            'bumpEntity': function(evtData){
-              this.walkForbidden(evtData);
+            'bumpEntity': function(evtData) {
+                Game.Message.send("it'd be mighty impolite to walk into " + evtData.target.getName());
+                Game.renderMessage();
             }
         }
     }

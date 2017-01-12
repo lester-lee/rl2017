@@ -123,22 +123,36 @@ Game.UIMode.gamePlay = {
         this.getMap().addEntity(this.getAvatar(), this.getMap().getRandomTileWalkable());
         this.setCameraToAvatar();
 
-        // add mobs
-        for (var ecount = 0; ecount < 1; ecount++) {
-            this.getMap().addEntity(Game.EntityGenerator.create('manta ray'), this.getMap().getRandomTileWalkable());
-        }
+        this.addMobs(25);
+    },
+    addMobs: function(n){
+      for (var ecount = 0; ecount < n; ecount++) {
+          this.getMap().addEntity(Game.EntityGenerator.create('manta ray'), this.getMap().getRandomTileWalkable());
+      }
+    },
+    placeAvatar: function() {
+        var map = this.getMap();
+        var tile = map.getRandomTileWalkable();
+        var avatar = this.getAvatar();
+        avatar.setPos(tile);
+        map.updateEntityLocation(avatar);
+        this.setCameraToAvatar();
     },
     nextLevel: function() {
         var oldMap = this.getMap();
-        var nextMap = oldMap.getNextMap() || new Game.Map('cave');
+        var nextMap = oldMap.getNextMap()
+        if (nextMap) {
+            this.setMap(nextMap);
+            this.placeAvatar();
+        } else {
+            nextMap = new Game.Map('cave');
+            this.setMap(nextMap);
+            nextMap.addEntity(this.getAvatar(), nextMap.getRandomTileWalkable());
+            this.setCameraToAvatar();
+            this.addMobs(25);
+        }
         oldMap.setNextMap(nextMap.getID());
         nextMap.setPrevMap(oldMap.getID());
-
-        // update current map to NextMap
-        this.setMap(nextMap);
-        nextMap.addEntity(this.getAvatar(), nextMap.getRandomTileWalkable());
-        this.setCameraToAvatar();
-
         Game.refresh();
         Game.Message.send('new land ahoy');
     },
@@ -148,10 +162,7 @@ Game.UIMode.gamePlay = {
             return false;
         }
         this.setMap(prevMap);
-        var tile = this.getMap().getRandomTileWalkable();
-        this.getAvatar().setPos(tile);
-        this.setCameraToAvatar();
-
+        this.placeAvatar();
         Game.refresh();
         Game.Message.send('returnin to yer roots eh?');
     },
