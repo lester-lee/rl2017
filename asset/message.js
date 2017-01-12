@@ -12,14 +12,14 @@ Game.Message = {
         var dispRow = 0;
         var freshIdx = 0;
         var staleIdx = 0;
-        var fLen = this.attr.freshMessages.length;
+        var fLen = this.attr.freshMessages.length - 1;
         var sLen = this.attr.staleMessages.length;
 
-        for (freshIdx = 0; freshIdx < fLen && dispRow < dispRowMax; freshIdx++) {
-            dispRow += display.drawText(1, dispRow, '%c{#fff}'+this.attr.freshMessages[freshIdx], dispColMax);
+        for (freshIdx = fLen; freshIdx >= 0 && dispRow < dispRowMax; freshIdx--) {
+            dispRow += display.drawText(1, dispRow, '%c{#fff}' + this.attr.freshMessages[freshIdx], dispColMax);
         }
         for (staleIdx = 0; staleIdx < sLen && dispRow < dispRowMax; staleIdx++) {
-            dispRow += display.drawText(1, dispRow, '%c{#999}'+this.attr.staleMessages[staleIdx], dispColMax);
+            dispRow += display.drawText(1, dispRow, '%c{#999}' + this.attr.staleMessages[staleIdx], dispColMax);
         }
     },
     ageMessages: function() {

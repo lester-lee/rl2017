@@ -22,7 +22,7 @@ Game.MapTileSets = {
         getMapTiles: function() {
             var mapTiles = Game.Util.init2DArray(this._width, this._height, Game.Tile.nullTile);
             var generator = new ROT.Map.Cellular(this._width, this._height);
-            generator.randomize(0.5);
+            generator.randomize(0.55);
             generator.create(function(x, y, v) {
                 if (v === 1) {
                     mapTiles[x][y] = Game.Tile.floorTile;

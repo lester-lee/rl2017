@@ -150,6 +150,17 @@ Game.UIMode.gamePlay = {
         this.setCameraToAvatar();
 
         Game.refresh();
+        Game.Message.send('new land ahoy');
+    },
+    prevLevel: function(){
+        var prevMap = this.getMap().getPrevMap();
+        this.attr._mapID = prevMap;
+        var tile = this.getMap().getRandomTileWalkable();
+        this.getAvatar().setPos(tile);
+        this.setCameraToAvatar();
+
+        Game.refresh();
+        Game.Message.send('returnin to yer roots eh?');
     },
     handleInput: function(inputType, inputData) {
         var action = Game.KeyBinding.getInput(inputType, inputData).key;
