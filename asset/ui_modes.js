@@ -36,8 +36,6 @@ Game.UIMode.gamePlay = {
     },
     JSON_KEY: 'uiMode_gamePlay',
     enter: function() {
-        // console.log("gamePlay enter");
-        Game.Message.send('a pair of star-crossed lovers take their life');
         if (this.attr._avatarID) {
             this.setCameraToAvatar();
         }
@@ -87,6 +85,8 @@ Game.UIMode.gamePlay = {
         if (this.getAvatar().tryWalk(this.getMap(), dx, dy)) {
             Game.refresh();
             this.checkMoveCamera();
+        } else {
+            Game.Message.send("arr ye blind matey, yer legs can't move there");
         }
     },
     checkMoveCamera: function() {
@@ -234,7 +234,7 @@ Game.UIMode.gamePersistence = {
     RANDOM_SEED_KEY: 'gameRandomSeed',
     enter: function() {
         // console.log("gamePersistence enter");
-        Game.Message.send('save, restore, or start a new game');
+        // Game.Message.send('save, restore, or start a new game');
     },
     exit: function() {
         // console.log("gamePersistence exit");
@@ -266,6 +266,7 @@ Game.UIMode.gamePersistence = {
     saveGame: function() {
         if (this.localStorageAvailable()) {
             Game.DATASTORE.GAME_PLAY = Game.UIMode.gamePlay.attr;
+            Game.DATASTORE.MESSAGES = Game.Message.attr;
             window.localStorage.setItem(Game.PERSISTENCE_NAMESPACE, JSON.stringify(Game.DATASTORE));
             Game.switchUIMode(Game.UIMode.gamePlay);
         } else {
@@ -299,11 +300,14 @@ Game.UIMode.gamePersistence = {
 
         // load gamePlay
         Game.UIMode.gamePlay.attr = state_data.GAME_PLAY;
+        Game.Message.attr = state_data.MESSAGES;
 
         Game.switchUIMode(Game.UIMode.gamePlay);
     },
     newGame: function() {
         Game.clearDatastore();
+        Game.Message.clear();
+        Game.Message.send('yer embarkin on a new journey');
         Game.setRandomSeed(5 + Math.floor(ROT.RNG.getUniform() * 100000));
         Game.UIMode.gamePlay.setupNewGame();
         Game.switchUIMode(Game.UIMode.gamePlay);

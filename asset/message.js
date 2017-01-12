@@ -8,6 +8,7 @@ Game.Message = {
     render: function(display) {
         display.clear();
         var dispRowMax = display._options.height;
+        var dispColMax = display._options.width - 1;
         var dispRow = 0;
         var freshIdx = 0;
         var staleIdx = 0;
@@ -15,10 +16,10 @@ Game.Message = {
         var sLen = this.attr.staleMessages.length;
 
         for (freshIdx = 0; freshIdx < fLen && dispRow < dispRowMax; freshIdx++) {
-            dispRow += display.drawText(1, dispRow, this.attr.freshMessages[freshIdx], '#fff', '#000');
+            dispRow += display.drawText(1, dispRow, '%c{#fff}'+this.attr.freshMessages[freshIdx], dispColMax);
         }
         for (staleIdx = 0; staleIdx < sLen && dispRow < dispRowMax; staleIdx++) {
-            dispRow += display.drawText(1, dispRow, this.attr.staleMessages[staleIdx], '#aa0', '#000');
+            dispRow += display.drawText(1, dispRow, '%c{#999}'+this.attr.staleMessages[staleIdx], dispColMax);
         }
     },
     ageMessages: function() {
