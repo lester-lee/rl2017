@@ -32,7 +32,9 @@ Game.UIMode.gamePlay = {
         _mapID: '',
         _avatarID: '',
         _cameraX: 50,
-        _cameraY: 50
+        _cameraY: 50,
+        _avDispX: 50,
+        _avDispY: 50
     },
     JSON_KEY: 'uiMode_gamePlay',
     enter: function() {
@@ -58,19 +60,7 @@ Game.UIMode.gamePlay = {
         this.attr._avatarID = a.getID();
     },
     render: function(display) {
-        // console.log("gamePlay render");
-        // display.drawText(1, 1, "the following two sentences are false", fg, bg);
-        // display.drawText(1, 3, "press [W] to win", fg, bg);
-        // display.drawText(1, 4, "press [L] to lose", fg, bg);
-        // display.drawText(1, 5, "press [=] to save/load/new", fg, bg);
         this.getMap().renderOn(display, this.attr._cameraX, this.attr._cameraY);
-        this.renderAvatar(display);
-    },
-    renderAvatar: function(display) {
-        var avX = this.getAvatar().getPos().x - this.attr._cameraX + Math.round(display._options.width / 2);
-        var avY = this.getAvatar().getPos().y - this.attr._cameraY + Math.round(display._options.height / 2);
-        this.getAvatar().setDispPos(new Game.Coordinate(avX, avY));
-        Game.DATASTORE.ENTITY[this.attr._avatarID].draw(display, avX, avY);
     },
     renderAvatarInfo: function(display) {
         display.drawText(1, 2, "avatar x:" + this.getAvatar().getPos().x, fg, bg); // DEV
@@ -85,8 +75,6 @@ Game.UIMode.gamePlay = {
         if (this.getAvatar().tryWalk(this.getMap(), dx, dy)) {
             Game.refresh();
             this.checkMoveCamera();
-        } else {
-            Game.Message.send("arr ye blind matey, yer legs can't move there");
         }
     },
     checkMoveCamera: function() {
@@ -113,16 +101,18 @@ Game.UIMode.gamePlay = {
         var display = Game.getDisplay('main');
         var dispW = display._options.width;
         var dispH = display._options.height;
-        if (this.getAvatar().getDispPos().x < Math.round(min * dispW)) {
+        this.attr._avDispX = this.getAvatar().getPos().x - this.attr._cameraX + Math.round(display._options.width / 2);
+        this.attr._avDispY = this.getAvatar().getPos().y - this.attr._cameraY + Math.round(display._options.height / 2);
+        if (this.attr._avDispX < Math.round(min * dispW)) {
             this.moveCamera(-1, 0);
         }
-        if (this.getAvatar().getDispPos().x > Math.round(max * dispW)) {
+        if (this.attr._avDispX > Math.round(max * dispW)) {
             this.moveCamera(1, 0);
         }
-        if (this.getAvatar().getDispPos().y < Math.round(min * dispH)) {
+        if (this.attr._avDispY < Math.round(min * dispH)) {
             this.moveCamera(0, -1);
         }
-        if (this.getAvatar().getDispPos().y > Math.round(max * dispH)) {
+        if (this.attr._avDispY > Math.round(max * dispH)) {
             this.moveCamera(0, 1);
         }
     },
@@ -134,7 +124,7 @@ Game.UIMode.gamePlay = {
         this.setCameraToAvatar();
 
         // add mobs
-        for (var ecount = 0; ecount < 15; ecount++) {
+        for (var ecount = 0; ecount < 1; ecount++) {
             this.getMap().addEntity(Game.EntityGenerator.create('manta ray'), this.getMap().getRandomTileWalkable());
         }
     },
@@ -152,8 +142,11 @@ Game.UIMode.gamePlay = {
         Game.refresh();
         Game.Message.send('new land ahoy');
     },
-    prevLevel: function(){
+    prevLevel: function() {
         var prevMap = this.getMap().getPrevMap();
+        if (!prevMap) {
+            return false;
+        }
         this.setMap(prevMap);
         var tile = this.getMap().getRandomTileWalkable();
         this.getAvatar().setPos(tile);
@@ -197,11 +190,9 @@ Game.UIMode.gamePlay = {
                 Game.switchUIMode(Game.UIMode.gamePersistence);
                 break;
             case 'NEXT_LEVEL':
-                console.log('next level');
                 this.nextLevel();
                 break;
             case 'PREVIOUS_LEVEL':
-                console.log('prev level');
                 this.prevLevel();
                 break;
             default:

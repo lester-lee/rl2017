@@ -1,5 +1,21 @@
 Game.EntityTraits = {};
 
+Game.EntityTraits.PlayerMessager = {
+    META: {
+        traitName: 'PlayerMessager',
+        traitGroup: 'PlayerMessager',
+        listeners: {
+            'walkForbidden': function(evtData) {
+                Game.Message.send("it'd be mighty impolite to walk into " + evtData.target.getName());
+                Game.renderMessage();
+            },
+            'bumpEntity': function(evtData){
+              this.walkForbidden(evtData);
+            }
+        }
+    }
+};
+
 Game.EntityTraits.WalkerCorporeal = {
     META: {
         traitName: 'WalkerCorporeal',
@@ -9,15 +25,28 @@ Game.EntityTraits.WalkerCorporeal = {
         var newX = Math.min(Math.max(0, this.getPos().x), map.getWidth()) + dx;
         var newY = Math.min(Math.max(0, this.getPos().y), map.getWidth()) + dy;
         var newPos = new Game.Coordinate(newX, newY);
+        var ent = map.getEntity(newPos);
+        if (ent) {
+            this.raiseEntityEvent('bumpEntity', {
+                actor: this,
+                target: ent
+            });
+            this.raiseEntityEvent('tookTurn');
+            return true;
+        }
         var nextTile = map.getTile(newPos);
         if (nextTile.isWalkable()) {
             this.setPos(newPos);
             map.updateEntityLocation(this);
-            this.trackTurns();
+            this.raiseEntityEvent('tookTurn');
             Game.refresh();
             return true;
+        } else {
+            this.raiseEntityEvent('walkForbidden', {
+                target: nextTile
+            });
+            return false;
         }
-        return false;
     }
 };
 
@@ -28,6 +57,11 @@ Game.EntityTraits.Chronicle = {
         stateNamespace: '_Chronicle_attr',
         stateModel: {
             turnCounter: 0
+        },
+        listeners: {
+            'tookTurn': function(evtData) {
+                this.trackTurns();
+            }
         }
     },
     trackTurns: function() {

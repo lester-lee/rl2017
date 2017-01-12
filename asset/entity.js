@@ -16,21 +16,24 @@ Game.Entity = function(template) {
     Game.DATASTORE.ENTITY[this.attr._ID] = this;
 
     // mixins/traits
+    this._traits = template.traits || {};
     this._traitTracker = {};
-    if (template.hasOwnProperty('traits')) {
-        for (var i = 0; i < template.traits.length; i++) {
-            var trait = template.traits[i];
-            this._traitTracker[trait.META.traitName] = true;
-            this._traitTracker[trait.META.traitGroup] = true;
-            for (var traitProp in traitProp != 'META' && trait) {
-                if (traitProp != 'META' && trait.hasOwnProperty(traitProp)) {
-                    this[traitProp] = trait[traitProp];
-                }
+    for (var i = 0; i < this._traits.length; i++) {
+        var trait = this._traits[i];
+        this._traitTracker[trait.META.traitName] = true;
+        this._traitTracker[trait.META.traitGroup] = true;
+        for (var traitProp in traitProp != 'META' && trait) {
+            if (traitProp != 'META' && trait.hasOwnProperty(traitProp)) {
+                this[traitProp] = trait[traitProp];
             }
-            if (trait.META.hasOwnProperty('stateNamespace')) {
-                this.attr[trait.META.stateNamespace] = {};
-                for (var traitStateProp in trait.META.stateModel) {
-                    if (trait.META.stateModel.hasOwnProperty(traitStateProp)) {
+        }
+        if (trait.META.hasOwnProperty('stateNamespace')) {
+            this.attr[trait.META.stateNamespace] = {};
+            for (var traitStateProp in trait.META.stateModel) {
+                if (trait.META.stateModel.hasOwnProperty(traitStateProp)) {
+                    if (typeof trait.META.stateModel[traitStateProp] == 'object') {
+                        this.attr[trait.META.stateNamespace][traitStateProp] = JSON.parse(JSON.stringify(trait.META.stateModel[traitStateProp]));
+                    } else {
                         this.attr[trait.META.stateNamespace][traitStateProp] = trait.META.stateModel[traitStateProp];
                     }
                 }
@@ -51,6 +54,15 @@ Game.Entity.prototype.hasTrait = function(check) {
         return this._traitTracker.hasOwnProperty(check);
     }
 }
+
+Game.Entity.prototype.raiseEntityEvent = function(evtLabel, evtData) {
+    for (var i = 0; i < this._traits.length; i++) {
+        var trait = this._traits[i];
+        if (trait.META.listeners && trait.META.listeners[evtLabel]) {
+            trait.META.listeners[evtLabel].call(this, evtData);
+        }
+    }
+};
 
 Game.Entity.prototype.getID = function() {
     return this.attr._ID;

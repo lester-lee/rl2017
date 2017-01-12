@@ -63,7 +63,7 @@ Game.Map.prototype.addEntity = function(ent, pos) {
 Game.Map.prototype.updateEntityLocation = function(ent) {
     var origLoc = this.attr._locationsByEntity[ent.getID()];
     if (origLoc) {
-        this.attr._locationsByEntity[ent.getID()] = undefined;
+        this.attr._entitiesByLocation[origLoc.x+','+origLoc.y] = undefined;
     }
     var pos = ent.getPos();
     this.attr._entitiesByLocation[pos.x + ',' + pos.y] = ent.getID();
@@ -116,7 +116,7 @@ Game.Map.prototype.renderOn = function(display, camX, camY) {
             }
             tile.draw(display, x, y);
             var ent = this.getEntity(pos);
-            if (ent && ent.getName() != 'avatar') {
+            if (ent && ent.getName()) {
                 ent.draw(display, x, y)
             }
         }

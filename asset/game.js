@@ -121,7 +121,7 @@ var Game = {
 
     renderAvatar: function() {
         this._display.avatar.o.clear();
-        if (this._curUIMode && this._curUIMode.hasOwnProperty('renderAvatar')) {
+        if (this._curUIMode && this._curUIMode.hasOwnProperty('renderAvatarInfo')) {
             var d = this.getDisplay('avatar');
             this._curUIMode.renderAvatarInfo(d);
         }
